@@ -27,14 +27,9 @@
 
 </div>
 
-> **Deployable bundle:** This directory is a **standalone app snapshot** of the app. Use **this folder** as the project root for all commands. The hero image defaults to `1000040771.png` at the repository root; you may point `img` `src` to any file under `public/` or a hosted URL.
-
----
-
 ## Table of contents
 
 - [What Missing You is](#what-missing-you-is)
-- [Tech at a glance](#tech-at-a-glance)
 - [Why we built it](#why-we-built-it)
 - [What you will feel here](#what-you-will-feel-here)
 - [UI preview](#ui-preview)
@@ -53,21 +48,6 @@
 You can invite the name that lives in your heart: someone you can no longer see, a character who walked with you through a story, or someone in real life you are not yet brave enough to speak to. The app walks with you through the questionnaire and your words, until *how they speak*, *what they care about*, and *the bond between you* are written down gently — then, in one-to-one chat, they answer in a warmth that feels familiar.
 
 There are no leaderboards, no public square — only you, your memories, and the connection **you** choose. The interface stays **quiet like warm paper**, without a wall of settings or the feel of piloting a machine. We believe **emotional safety** matters more than a cold list of features.
-
----
-
-## Tech at a glance
-
-
-| Area                  | How it is implemented today                                                                                                                                                                                                                                     |
-| --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Stack**             | [Next.js](https://nextjs.org/) 16 (App Router) · [React](https://react.dev/) 19 · TypeScript · Tailwind CSS 4 · [Zod](https://zod.dev/) for request/config validation                                                                                           |
-| **Data**              | [libSQL](https://github.com/tursodatabase/libsql) (SQLite- compatible) on disk, accessed via [Drizzle ORM](https://orm.drizzle.team/); account material encrypted (Argon2id, local DEK) — **single-user, localhost-first**                                      |
-| **LLM**               | You choose **OpenAI-compatible** or **Anthropic** upstreams; the server proxies calls with **URL allowlists**, timeouts, and redacted errors                                                                                                                    |
-| **Search (optional)** | **Web search in chat** when the model supports it: **LLM-native** (vendor search SKUs), or **Brave Search** / **Firecrawl** with API keys **encrypted in your local data dir**; optional **URL whitelists** (e.g. wikis for fictional “summon by renown” flows) |
-| **I18n**              | **English** and **简体中文** in-app                                                                                                                                                                                                                                 |
-| **Tests**             | [Vitest](https://vitest.dev/) (unit) + [Playwright](https://playwright.dev/) (E2E); `npm test` / `npm run test:e2e` here                                                                                                                                        |
-
 
 ---
 
