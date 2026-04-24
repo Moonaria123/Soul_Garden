@@ -1,0 +1,202 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+@layer base {
+  :root {
+    /* Soul Upload — Warm Paper Theme (Light) */
+    /* Background tones — warm parchment */
+    --background: 37 33% 96%;       /* #FAF7F2 — old letter-paper white */
+    --foreground: 22 36% 12%;       /* #2C1F14 — deep warm brown ink */
+
+    /* Card / popover surfaces — layered paper */
+    --card: 36 28% 93%;             /* #F5F0E8 — parchment */
+    --card-foreground: 22 36% 12%;
+    --popover: 35 24% 92%;          /* #F2EDE4 — light cream */
+    --popover-foreground: 22 36% 12%;
+
+    /* Primary — terracotta */
+    --primary: 22 45% 42%;          /* #9B5E3A */
+    --primary-foreground: 37 33% 96%;
+
+    /* Secondary — sage green */
+    --secondary: 104 12% 49%;       /* #7A8C6E */
+    --secondary-foreground: 37 33% 96%;
+
+    /* Muted — warm linen */
+    --muted: 33 18% 89%;            /* #EDE6DA */
+    --muted-foreground: 25 14% 41%; /* #7A6A58 */
+
+    /* Accent — light terracotta highlight */
+    --accent: 30 22% 85%;           /* #E8D5C4 */
+    --accent-foreground: 22 36% 12%;
+
+    /* Destructive — deep terracotta brown, NOT angry red */
+    --destructive: 14 44% 38%;      /* #8C4A35 */
+    --destructive-foreground: 37 33% 96%;
+
+    /* Border / input / ring */
+    --border: 33 16% 75%;           /* #CFC5B2 */
+    --input: 33 15% 82%;            /* #D9D0C0 */
+    --ring: 22 45% 42%;             /* terracotta focus ring */
+
+    /* Chart colors — warm palette */
+    --chart-1: 22 45% 42%;          /* terracotta */
+    --chart-2: 104 12% 49%;         /* sage */
+    --chart-3: 38 60% 55%;          /* amber gold */
+    --chart-4: 14 44% 38%;          /* deep brown */
+    --chart-5: 120 20% 45%;         /* moss green */
+
+    /* Radius — rounded, friendly */
+    --radius: 0.75rem;
+
+    /* Soul Upload extended tokens */
+    --su-surface-2: 35 24% 92%;       /* #F2EDE4 — message bubbles */
+    --su-surface-offset: 33 20% 87%;  /* #EDE6DA — hover/divider */
+    --su-text-faint: 28 12% 65%;      /* #B5A898 — timestamps/hints */
+    --su-primary-highlight: 30 22% 85%; /* #E8D5C4 — selected cards */
+    --su-secondary-highlight: 100 14% 82%; /* #D4DCCC — sage highlight */
+    --su-success: 104 26% 38%;        /* #5C7A48 — deep moss green */
+
+    /* Warm shadows */
+    --shadow-warm-sm: 0 1px 3px hsl(30 20% 25% / 0.08);
+    --shadow-warm-md: 0 4px 16px hsl(30 20% 25% / 0.10);
+
+    /* Local fallbacks for offline/container builds */
+    --font-noto-serif-sc: "Source Han Serif SC", "Songti SC", "SimSun", serif;
+    --font-noto-sans-sc: "Noto Sans CJK SC", "Microsoft YaHei", "PingFang SC", system-ui, sans-serif;
+    --font-instrument-serif: "Georgia", "Times New Roman", serif;
+  }
+
+  /* Night reading mode */
+  [data-theme="dark"] {
+    --background: 25 18% 8%;        /* #1A1612 */
+    --foreground: 30 20% 88%;       /* #E8DDD0 */
+
+    --card: 25 15% 10%;             /* #211D18 */
+    --card-foreground: 30 20% 88%;
+    --popover: 25 12% 13%;          /* #2A2520 */
+    --popover-foreground: 30 20% 88%;
+
+    --primary: 24 40% 56%;          /* #C4845A — brighter terracotta */
+    --primary-foreground: 25 18% 8%;
+
+    --secondary: 104 12% 49%;
+    --secondary-foreground: 30 20% 88%;
+
+    --muted: 25 10% 17%;            /* #312B25 */
+    --muted-foreground: 28 10% 55%; /* #9A8E82 */
+
+    --accent: 25 15% 22%;
+    --accent-foreground: 30 20% 88%;
+
+    --destructive: 14 40% 45%;
+    --destructive-foreground: 30 20% 88%;
+
+    --border: 25 10% 22%;
+    --input: 25 10% 25%;
+    --ring: 24 40% 56%;
+
+    --su-surface-2: 25 12% 13%;
+    --su-surface-offset: 25 10% 17%;
+    --su-text-faint: 25 8% 35%;
+    --su-primary-highlight: 25 20% 18%;
+
+    --shadow-warm-sm: 0 1px 4px hsl(0 0% 0% / 0.4);
+    --shadow-warm-md: 0 6px 24px hsl(0 0% 0% / 0.5);
+  }
+}
+
+@theme inline {
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+  --color-chart-1: hsl(var(--chart-1));
+  --color-chart-2: hsl(var(--chart-2));
+  --color-chart-3: hsl(var(--chart-3));
+  --color-chart-4: hsl(var(--chart-4));
+  --color-chart-5: hsl(var(--chart-5));
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --font-sans: var(--font-noto-sans-sc);
+  --font-mono: var(--font-noto-sans-sc);
+  --font-display: var(--font-noto-serif-sc);
+  --font-display-en: var(--font-instrument-serif);
+  --font-body: var(--font-noto-sans-sc);
+  --color-primary-highlight: hsl(var(--su-primary-highlight));
+  --color-secondary-highlight: hsl(var(--su-secondary-highlight));
+  --color-su-success: hsl(var(--su-success));
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-body), 'PingFang SC', 'Microsoft YaHei', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+/* SU-ITER-026: English display font — Instrument Serif for en locale.
+   Unlayered so it overrides @theme inline's --font-display definition. */
+html[lang="en"] {
+  --font-display: var(--font-instrument-serif);
+}
+
+/* Soul Upload — candle-flame breathing animation */
+@keyframes breathe {
+  0%, 100% { transform: scale(0.95); opacity: 0.85; }
+  50% { transform: scale(1.05); opacity: 1; }
+}
+
+/* Three-dot breathing for chat waiting state */
+@keyframes dot-breathing {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 1; }
+}
+
+/* MD Editor overrides for warm paper theme */
+.w-md-editor {
+  --color-canvas-default: hsl(var(--card));
+  --color-border-default: hsl(var(--border));
+  border-radius: var(--radius-md);
+}
+.w-md-editor-text-pre,
+.w-md-editor-text-input,
+.w-md-editor-text {
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+.wmde-markdown {
+  background: transparent;
+}
+
+/* Prefers reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

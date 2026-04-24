@@ -1,0 +1,9 @@
+1/15/24, 2:30 PM - Alice: Hey, how are you?
+1/15/24, 2:31 PM - Bob: I'm good, thanks! What's up?
+1/15/24, 2:32 PM - Alice: Just wanted to check in. Are you free this weekend?
+1/15/24, 2:33 PM - Bob: Yeah, I think so. What did you have in mind?
+1/15/24, 2:34 PM - Alice: Maybe we could go hiking?
+1/15/24, 2:35 PM - Bob: Sounds great! Let me check the weather
+first and I'll get back to you.
+1/15/24, 2:36 PM - Alice sent a photo
+1/15/24, 2:37 PM - Messages and calls are end-to-end encrypted. No one outside of this chat, not even WhatsApp, can read or listen to them.
