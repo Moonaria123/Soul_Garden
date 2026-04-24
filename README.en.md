@@ -112,11 +112,15 @@ Pack the **Soul Vault** to go, or step toward **OpenClaw** in one tap, so they c
 
 ## UI preview
 
-> Click the image below to watch a short walkthrough on Bilibili (Chinese UI; same demo for both README languages).
+> Click the button below to watch a short walkthrough on Bilibili (Chinese UI; same demo for both README languages).
 
+<div align="center">
 
+<a href="https://www.bilibili.com/video/BV1GiQFBJEM1?t=4.8" rel="nofollow" target="_blank">
+  <img src="https://img.shields.io/badge/▶_Watch_on_Bilibili-00A1D6?style=for-the-badge&logo=bilibili&logoColor=white" alt="Watch demo on Bilibili" />
+</a>
 
-
+</div>
 
 
 

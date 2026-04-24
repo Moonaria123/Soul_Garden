@@ -116,6 +116,14 @@ Missing You: Soul Garden
 
 > 点击下方按钮观看 B 站演示视频（中文界面；中英文 README 共用同一演示）。
 
+<div align="center">
+
+<a href="https://www.bilibili.com/video/BV1GiQFBJEM1?t=4.8" target="_blank">
+  <img src="https://img.shields.io/badge/▶_在B站观看演示-00A1D6?style=for-the-badge&logo=bilibili&logoColor=white" alt="在B站观看演示" />
+</a>
+
+</div>
+
 ---
 
 ## 走近这些能力
