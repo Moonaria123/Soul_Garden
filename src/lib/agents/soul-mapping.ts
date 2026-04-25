@@ -93,7 +93,9 @@ export function buildSystemPrompt(
   step4?: QuestionnaireStep4,
   userProfile?: UserProfile | null,
   step1?: QuestionnaireStep1,
-  replyStyle: ChatReplyStyle = DEFAULT_CHAT_REPLY_STYLE
+  replyStyle: ChatReplyStyle = DEFAULT_CHAT_REPLY_STYLE,
+  /** SU-044 — read-only dialogue-derived memory block (already formatted markdown). */
+  conversationMemoryBlock?: string,
 ): string {
   const parts: string[] = [];
 
@@ -121,6 +123,11 @@ export function buildSystemPrompt(
   // Memories
   if (soulDocs.MEMORY) {
     parts.push(`## 你记得的事情\n\n${soulDocs.MEMORY}`);
+  }
+
+  // Dialogue-period memory (FR-204) — distinct from editable MATERIAL memory above
+  if (conversationMemoryBlock?.trim()) {
+    parts.push(conversationMemoryBlock.trim());
   }
 
   // Relationship

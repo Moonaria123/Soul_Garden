@@ -159,6 +159,43 @@ function chatValidationErrorResponse(err: ZodError): NextResponse {
   );
 }
 
+/**
+ * `safeUpstreamFetch` / `fetch` throws before an HTTP response exists (DNS,
+ * TLS, refused connection). Those used to fall through to a generic 502 with
+ * `upstream_error` in production — the browser only saw "Bad Gateway" and
+ * the LLM error classifier could not mark the failure as network/retryable.
+ */
+function isLikelyUpstreamConnectFailure(e: unknown): boolean {
+  if (e instanceof TypeError) {
+    const msg = e.message.toLowerCase();
+    if (/json|parse|syntax|cannot read|undefined/.test(msg)) return false;
+    return true;
+  }
+  if (!(e instanceof Error)) return false;
+  const errno = (e as NodeJS.ErrnoException).code;
+  if (typeof errno === 'string' && /^(ECONN|EADDR|EHOST|ENET|EAI)/.test(errno)) {
+    return true;
+  }
+  const text = `${e.message} ${e.cause instanceof Error ? e.cause.message : ''}`;
+  return /fetch failed|econn|enotfound|etimed|socket|getaddrinfo|ssl|tls|cert|network|refused|reset/i.test(
+    text,
+  );
+}
+
+function connectFailureResponse(e: unknown): NextResponse {
+  const dev = process.env.NODE_ENV !== 'production';
+  let error: string;
+  if (dev) {
+    const base = e instanceof Error ? e.message : String(e);
+    const cause = e instanceof Error && e.cause instanceof Error ? ` — ${e.cause.message}` : '';
+    error = `Failed to fetch upstream: ${base}${cause}`;
+  } else {
+    error =
+      'Failed to fetch the LLM endpoint. Check the provider base URL, API key, VPN or firewall, and that the service is online.';
+  }
+  return NextResponse.json({ error }, { status: 503 });
+}
+
 export async function POST(req: NextRequest) {
   const guard = localhostGuard(req);
   if (guard) return guard;
@@ -246,6 +283,10 @@ export async function POST(req: NextRequest) {
     const msg = e instanceof Error ? e.message : 'Chat request failed';
     if (msg.includes('aborted')) {
       return NextResponse.json({ error: 'Request timeout' }, { status: 504 });
+    }
+    if (isLikelyUpstreamConnectFailure(e)) {
+      console.warn('[llm-chat] upstream connect failure:', e);
+      return connectFailureResponse(e);
     }
     // SU-ITER-092-batch3 · Nit cleanup — never leak upstream error bodies to
     // the client in production; they may carry provider-side stack snippets,

@@ -37,7 +37,7 @@ async function buildBackupFileAsync(opts: {
           ? 'entity'
           : 'global',
     scope: opts.scope,
-    appVersion: '0.1.0',
+    appVersion: '1.1.0.1',
     createdAt: new Date().toISOString(),
     encrypted: false,
   };

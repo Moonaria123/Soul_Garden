@@ -119,6 +119,17 @@ export const zhCN: Record<string, string> = {
   'chat.online': '在线',
   'chat.loading': '加载中…',
   'chat.sessionTitle': '新对话',
+  'chat.memoryTimeline.title': '持续记忆',
+  'chat.memoryTimeline.open': '持续记忆',
+  'chat.memoryTimeline.empty':
+    '还没有从对话里沉淀下来的记忆。多聊聊，重要的片段会慢慢聚在这里。',
+  'chat.memoryTimeline.readonly': '只读，来自你与 TA 的真实对话（不是问卷里的素材记忆）。',
+  'chat.memoryTimeline.facts': '稳定事实',
+  'chat.memoryTimeline.events': '重要片段',
+  'chat.memoryTimeline.summaries': '主题摘要',
+  'chat.memoryTimeline.relationship': '关系状态',
+  'chat.memoryTimeline.openLoops': '未完成话题',
+  'chat.memoryTimeline.addressingStyle': '称呼偏好',
 
   // LLM errors (SU-088 P0-G) — five-category taxonomy + retry copy
   'llm.error.network': '网络好像打了个盹，稍等一下再试？',
@@ -497,6 +508,91 @@ export const zhCN: Record<string, string> = {
   'settings.securityNote': '您的 API 密钥已在本设备上加密存储，仅在调用模型时才会短暂解密',
 
   // SU-087 — Session & Security settings card
+  'settings.embedding.title': '对话记忆向量检索',
+  'settings.embedding.desc':
+    '可选：用很小的本地模型或你信任的 Embeddings API，让系统在长对话里更稳地想起相关片段。默认关闭；开启后也不会把内容送到 Soul Upload 服务器。',
+  'settings.embedding.mode': '向量来源',
+  'settings.embedding.modeOff': '关闭',
+  'settings.embedding.modeLocal': '本地微型模型（需先下载）',
+  'settings.embedding.modeCloud': '云端 Embeddings API（自备密钥）',
+  'settings.embedding.localSection': '本地模型',
+  'settings.embedding.weightSource': '模型权重来源',
+  'settings.embedding.weightSourceMirror': 'HF-Mirror 镜像（国内常用）',
+  'settings.embedding.weightSourceOfficial': 'Hugging Face 官方',
+  'settings.embedding.weightSourceToggleOfficial': '官方源',
+  'settings.embedding.weightSourceToggleMirror': '国内镜像',
+  'settings.embedding.weightSourceToggleAria': '在 Hugging Face 官方与国内镜像之间切换模型权重下载地址',
+  'settings.embedding.weightSourceHint':
+    '与官方为同一套模型仓库，仅下载域名不同。默认走官方；若国内访问较慢，可打开「国内镜像」。',
+  'settings.embedding.localWeightSourceSwitched':
+    '已更换权重来源：若本地向量已启用，会暂回关闭，请重新下载后再开启。',
+  'settings.embedding.zhTag': '中文优化',
+  'settings.embedding.localPick': '选择要下载的模型',
+  'settings.embedding.localPickHint':
+    '权重从公开 CDN 按需拉取。更换型号后若本地模式曾开启，会先回到关闭直至你重新下载；旧向量与新型号不通用，建议随后「重建向量」。',
+  'settings.embedding.localModelSwitched':
+    '已更换模型：若你刚才在用本地向量，模式会暂回关闭；请为新型号重新下载后再开启，并视需要重建索引。',
+  'settings.embedding.localModel.e5Small.name': '多语言 E5 · Small',
+  'settings.embedding.localModel.e5Small.desc':
+    '中文等多语种场景常用推荐，体积与效果较平衡（约中等体量）。',
+  'settings.embedding.localModel.e5Base.name': '多语言 E5 · Base',
+  'settings.embedding.localModel.e5Base.desc':
+    '同系列更强表征，体积更大；网络与内存充足时可优先尝试。',
+  'settings.embedding.localModel.mpMinilmL12.name': '多语言 MiniLM L12',
+  'settings.embedding.localModel.mpMinilmL12.desc':
+    '句向量对称模型，多语轻量；不区分 query/ passage 前缀，适合想更快加载时的备选。',
+  'settings.embedding.localModel.jinaBaseZh.name': 'Jina Embeddings v2 Base · 中文',
+  'settings.embedding.localModel.jinaBaseZh.desc':
+    '面向中文句向量（ONNX）；可与多语 E5 二选一，体积中等。',
+  'settings.embedding.localModel.bgeSmallZh.name': 'BGE small · 中文 v1.5',
+  'settings.embedding.localModel.bgeSmallZh.desc':
+    '中文轻量句向量，检索常用；以中文为主、希望包更小时可选用。',
+  'settings.embedding.localModel.minilmL6.name': 'English MiniLM L6',
+  'settings.embedding.localModel.minilmL6.desc':
+    '体积极小、英文为主；中文效果弱于多语模型，仅适合主要用英文记录时选用。',
+  'settings.embedding.localModel.gteSmall.name': 'GTE · Small',
+  'settings.embedding.localModel.gteSmall.desc':
+    '通用英文句向量（对称），质量与体积兼顾；以中文为主时仍更推荐 E5 多语款。',
+  'settings.embedding.localStatusReady': '本地模型已就绪，可用于记忆向量。',
+  'settings.embedding.localStatusNone': '尚未下载本地模型。',
+  'settings.embedding.downloadLocal': '下载并启用本地模型',
+  'settings.embedding.downloadProgress': '下载进度约 {p}%',
+  'settings.embedding.clearLocalCache': '清除本地模型缓存',
+  'settings.embedding.localNeedDownload': '选择本地模式后，请先完成下方「下载」；未完成前检索仍按关闭处理。',
+  'settings.embedding.localReady': '本地模型已准备好，可以慢慢聊，相关记忆会更易被唤起。',
+  'settings.embedding.localFailed': '下载或加载模型时遇到问题，可检查网络后重试。',
+  'settings.embedding.cloudSection': '云端 API',
+  'settings.embedding.cloudUrl': 'API Base URL',
+  'settings.embedding.cloudModel': '嵌入模型 ID',
+  'settings.embedding.cloudKey': 'API Key',
+  'settings.embedding.cloudKeyPlaceholder': '留空则保留已保存的密钥',
+  'settings.embedding.saveCloud': '保存云端配置',
+  'settings.embedding.testCloud': '测试连接',
+  'settings.embedding.cloudTestOk': '连接正常，向量维度 {dims}。',
+  'settings.embedding.cloudTestFail': '测试失败，请检查地址、模型名与密钥。',
+  'settings.embedding.cloudTestNeed': '请填写 Base URL，并提供密钥（或先保存密钥）。',
+  'settings.embedding.cloudNeedUrl': '请先填写云端 API 地址。',
+  'settings.embedding.cloudNeedKey': '请先填写或保存 API Key。',
+  'settings.embedding.cloudSaved': '云端向量配置已保存。',
+  'settings.embedding.dims': '已探测维度：{n}',
+  'settings.embedding.maintenance': '索引维护',
+  'settings.embedding.maintenanceHint':
+    '从备份恢复后，向量通常需要重建。清除向量不会删除对话或记忆条目，只会删掉用于检索的数值索引。',
+  'settings.embedding.reindex': '为全部记忆重建向量',
+  'settings.embedding.reindexNeedEmbedding':
+    '请先在上方开启「本地」或「云端」向量，再重建索引；当前向量来源为关闭，无法写入。',
+  'settings.embedding.reindexNoMemories': '暂无可建立向量的记忆（还没有事件/事实类记忆条目）。',
+  'settings.embedding.reindexDone': '已写入 {n} / 共 {m} 条记忆片段的向量。',
+  'settings.embedding.reindexPercent': '重建进度 {p}%（{c} / {t} 条）',
+  'settings.embedding.reindexSkippedEntities':
+    '有 {k} 个意识体已关闭「持续记忆」，未纳入本次向量重建（可在意识体详情中打开）。',
+  'settings.embedding.reindexFail': '重建失败，请稍后再试。',
+  'settings.embedding.deleteVectors': '清除全部向量索引',
+  'settings.embedding.vectorsCleared': '已清除全部向量索引。',
+  'settings.embedding.deleteFail': '清除失败，请稍后再试。',
+  'settings.embedding.modeSaved': '已切换向量模式。',
+  'settings.embedding.saveFailed': '保存失败，请稍后再试。',
+  'settings.embedding.localCacheCleared': '已清除浏览器中的本地模型缓存；需要时可重新下载。',
   'settings.session.title': '会话与安全',
   'settings.session.description': '管理自动登出时机与刷新后的登录保持方式',
   'settings.session.autoLogout': '自动登出',
@@ -749,10 +845,41 @@ export const zhCN: Record<string, string> = {
   'new.materials.skipHint': '这一步是可选的，你也可以稍后在意识体的记忆秘藏中补充',
   'new.materials.skip': '跳过，直接召唤',
   'new.materials.continue': '继续',
+  'new.materials.emptyConfirmTitle': '未上传任何素材',
+  'new.materials.emptyConfirmDescription': '未上传任何素材，是否直接召唤？',
+  'new.materials.emptyConfirmYes': '是，直接召唤',
+  'new.materials.emptyConfirmNo': '否',
+  'new.materials.dimensionalSectionTitle': '来自「打破次元壁」的综合资料',
+  'new.materials.dimensionalSectionSubtitle':
+    '以下内容由本机联网与模型整理生成，将与你在下方上传的文字一起，供召唤后的灵魂分析使用。',
+  'new.draft.singleHint': '我们为你留着这一份进行中的草稿',
+  'new.draft.singleHintDetail':
+    '每种同伴类型在本机只会保存一份未完成的创建进度。若你重新开始同类型的流程，新的内容会温柔地覆盖上一份未完成记录；其他类型的草稿不会受影响。',
+  'new.draft.dismiss': '知道了',
 
   // Memory sanctuary (记忆秘藏)
   'entity.detail.memorySanctuary': '记忆秘藏',
   'entity.detail.memorySanctuaryHint': '这里珍藏着关于 TA 的文字记忆——每一份都让 TA 更完整',
+  'entity.memory.howItWorksTitle': '持续记忆，是怎样轻轻运转的',
+  'entity.memory.howItWorksP1':
+    '在聊天中，我们并不会把每一句都存成「知识」——那太吵，也太像监视。更温和的做法是：只把对你与 TA 重要的偏好、承诺、情绪节点与边界，慢慢写成事件与事实，让 TA 在以后的对话里，有一点温柔的上下文。',
+  'entity.memory.howItWorksP2':
+    '你亲手写的灵魂文档、问卷与这里上传的材料，是 TA 的根基；而对话中沉淀下的事件与事实，会像日常的露水，让关系一点点变得更真实。若你开启了设置里的「向量记忆」，我们还会用很轻的数值索引，在很长很长的聊天之后，把相关的往事轻轻带到眼前——一切仍只存在你的本机，不会上送 Soul Upload 服务器。',
+  'entity.memory.howItWorksP3':
+    '若你担心打扰，可以把它关掉。记忆从来不是为了纠缠过去，而是为了让此刻的对话更被理解、被认真对待。',
+  'entity.memory.backfillTitle': '把更早的对话，也轻轻收进记忆',
+  'entity.memory.backfillHint':
+    '在开启持续记忆之后，新对话会按节奏自动整理；这条路上的旧聊天，可以在这里用模型分段回顾并沉淀。过程会消耗一定对话额度，与平时整理记忆的用法相同。偶尔可能出现少量与近期已提取内容相近的条目，事实类会尽量合并。',
+  'entity.memory.backfillCta': '沉淀历史聊天中的记忆',
+  'entity.memory.backfillProgress': '正在整理第 {c} / {t} 段…',
+  'entity.memory.backfillDone': '已分段整理 {windows} 段，共读取 {messages} 条消息；事件与事实已写入，你可稍后在对话中感受是否更顺。',
+  'entity.memory.backfillNoChat': '暂无可整理的消息——多聊几句之后再来，也很好。',
+  'entity.memory.backfillNeedLlm': '请先在设置中配置并启用可用的语言模型，我们才能在本地为你温柔地阅读旧对话。',
+  'entity.memory.backfillDisabled': '当前已关闭「持续记忆」，若需整理旧对话，请先打开上方开关。',
+  'entity.memory.backfillFail': '这次整理没有完成。可以稍候再试，或检查网络与模型连接。',
+  'entity.memory.continuousLabel': '持续记忆',
+  'entity.memory.continuousHint':
+    '关闭后，与该意识体的新对话不会沉淀为事件与事实，也不会参与「设置」中的全量向量重建；已写下的内容仍保留，除非你自行清理。',
   'entity.detail.materialsTitle': '文字素材',
   'entity.detail.materialsHint': '导入的文字素材会丰富灵魂的记忆与表达',
   'entity.detail.materialsAdd': '补充记忆',
@@ -955,6 +1082,8 @@ export const zhCN: Record<string, string> = {
   'backup.restore.replaceExisting': '替换已有意识体',
   'backup.restore.entityExists': '同名意识体已存在，请选择恢复方式：',
   'backup.restore.success': '恢复成功',
+  'backup.restore.suggestRelationshipRebuild':
+    '关系状态已按备份重置。若需要，可在秘境档案中轻点「重建关系」，让系统根据问卷与记忆摘要重新整理分值。',
   'backup.restore.error': '恢复失败：{error}',
   'backup.restore.invalidFile': '无效的备份文件',
   'backup.restore.versionMismatch': '备份版本不兼容',
@@ -989,4 +1118,26 @@ export const zhCN: Record<string, string> = {
   'backup.selectFile': '选择备份文件',
   'backup.dropHint': '点击选择或拖放 .soul-backup 文件',
   'backup.cancel': '取消',
+
+  'relationship.tier.1': '陌生人',
+  'relationship.tier.2': '初识',
+  'relationship.tier.3': '朋友',
+  'relationship.tier.4': '伙伴',
+  'relationship.tier.5_m_m': '情同手足',
+  'relationship.tier.5_m_f': '知己相依',
+  'relationship.tier.5_f_f': '闺蜜至诚',
+  'relationship.tier.5_f_m': '挚友无间',
+  'relationship.tier.5_neutral': '亲密相知',
+
+  'entity.relationship.rebuildCta': '重建关系',
+  'entity.relationship.rebuildHint':
+    '根据当前问卷、灵魂档案与已沉淀的记忆摘要，重新估算你与 TA 的关系分值（会覆盖现有分值）。',
+  'entity.relationship.rebuildConfirmTitle': '重建关系分值？',
+  'entity.relationship.rebuildConfirmDesc':
+    '这将根据你填写的事实与记忆摘要重新打分，并覆盖当前关系状态。可随时再次重建。',
+  'entity.relationship.rebuildConfirm': '开始重建',
+  'entity.relationship.rebuildCancel': '先不要',
+  'entity.relationship.rebuilding': '正在重建关系…',
+  'entity.relationship.rebuildDone': '关系状态已更新',
+  'entity.relationship.rebuildFail': '这次没能完成重建，可稍后再试或检查模型连接。',
 };

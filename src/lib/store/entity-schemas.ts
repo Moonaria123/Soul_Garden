@@ -9,7 +9,43 @@
 // failure and a console warning pointing at the offending row id.
 
 import { z } from 'zod';
-import type { QuestionnaireData, SoulDocs, EntityType, ConsciousnessEntity } from '@/types';
+import type {
+  QuestionnaireData,
+  SoulDocs,
+  EntityType,
+  ConsciousnessEntity,
+  TextMaterial,
+} from '@/types';
+import type { DimensionalBreakResult } from '@/lib/search/search-types';
+
+/**
+ * Payload stored in `drafts` under id `draft_${entityType}` for the new-entity wizard.
+ * Questionnaire steps plus optional fictional dimensional break + materials (FR local draft).
+ */
+export type NewEntityDraftPayload = Partial<QuestionnaireData> & {
+  dimensionalBreakResult?: DimensionalBreakResult | null;
+  webSearchMaterials?: TextMaterial[];
+  textMaterials?: TextMaterial[];
+  chatMaterials?: TextMaterial[];
+  avatarUrl?: string;
+};
+
+/** Whether the draft row is worth surfacing a "we kept your progress" style hint. */
+export function hasRecoverableNewEntityDraft(
+  draft: NewEntityDraftPayload | null | undefined,
+): boolean {
+  if (!draft || typeof draft !== 'object') return false;
+  if (draft.step1?.name?.trim()) return true;
+  if ((draft.dimensionalBreakResult?.dimensions?.length ?? 0) > 0) return true;
+  if ((draft.webSearchMaterials?.length ?? 0) > 0) return true;
+  if ((draft.textMaterials?.length ?? 0) > 0) return true;
+  if ((draft.chatMaterials?.length ?? 0) > 0) return true;
+  if (draft.avatarUrl) return true;
+  if ((draft.step2?.personalityKeywords?.length ?? 0) > 0) return true;
+  if (draft.step3?.emotionalReactions?.whenHappy?.trim()) return true;
+  if (draft.step4?.relationshipType?.trim()) return true;
+  return false;
+}
 
 // SU-ITER-092-batch3 · Nit cleanup — previously `rowToEntity` cast
 // `row.entityType as EntityType` and `row.status as ConsciousnessEntity['status']`

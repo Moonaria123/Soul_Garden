@@ -3,6 +3,7 @@
 import { create } from 'zustand';
 import { v4 as uuid } from 'uuid';
 import type { ConsciousnessEntity, QuestionnaireData, EntityType } from '@/types';
+import type { NewEntityDraftPayload } from './entity-schemas';
 import * as dbClient from '@/lib/db/db-client';
 import { useUserProfileStore } from '@/lib/store/user-profile-store';
 // SU-ITER-090c · P2-01 — replace `as unknown as` and raw JSON.parse with
@@ -46,6 +47,7 @@ function entityToRow(entity: ConsciousnessEntity) {
     nickname: entity.questionnaire?.step1?.informalNickname ?? null,
     region: entity.questionnaire?.step1?.region ?? null,
     errorMessage: entity.errorMessage ?? null,
+    continuousMemoryEnabled: entity.continuousMemoryEnabled !== false,
     createdAt: entity.createdAt,
     updatedAt: entity.updatedAt,
   };
@@ -93,22 +95,31 @@ function rowToEntity(row: Record<string, unknown>): ConsciousnessEntity {
     ),
     chatBackgroundImage: (row.backgroundImage ?? row.background_image) as string | undefined,
     errorMessage: (row.errorMessage ?? row.error_message) as string | undefined,
+    continuousMemoryEnabled: parseContinuousMemoryEnabled(
+      row.continuousMemoryEnabled ?? row.continuous_memory_enabled,
+    ),
     createdAt: (row.createdAt ?? row.created_at) as string,
     updatedAt: (row.updatedAt ?? row.updated_at) as string,
   };
 }
 
+function parseContinuousMemoryEnabled(raw: unknown): boolean {
+  if (raw === false || raw === 0) return false;
+  if (raw === true || raw === 1) return true;
+  return true;
+}
+
 interface EntityState {
   entities: ConsciousnessEntity[];
-  currentDraft: Partial<QuestionnaireData> | null;
+  currentDraft: NewEntityDraftPayload | null;
   isLoading: boolean;
   loadEntities: () => Promise<void>;
   createEntity: (questionnaire: QuestionnaireData) => Promise<ConsciousnessEntity>;
   updateEntity: (id: string, updates: Partial<ConsciousnessEntity>) => Promise<void>;
   deleteEntity: (id: string) => Promise<void>;
   getEntity: (id: string) => Promise<ConsciousnessEntity | undefined>;
-  saveDraft: (entityType: EntityType, draft: Partial<QuestionnaireData>) => Promise<void>;
-  loadDraft: (entityType: EntityType) => Promise<Partial<QuestionnaireData> | null>;
+  saveDraft: (entityType: EntityType, draft: NewEntityDraftPayload) => Promise<void>;
+  loadDraft: (entityType: EntityType) => Promise<NewEntityDraftPayload | null>;
   clearDraft: (entityType: EntityType) => Promise<void>;
 }
 
@@ -138,6 +149,7 @@ export const useEntityStore = create<EntityState>((set, get) => ({
       questionnaire,
       soulDocs: { ...EMPTY_SOUL_DOCS },
       status: 'draft',
+      continuousMemoryEnabled: true,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     };
@@ -198,7 +210,7 @@ export const useEntityStore = create<EntityState>((set, get) => ({
     try {
       const row = await dbClient.getDraft(`draft_${entityType}`);
       if (!row) { set({ currentDraft: null }); return null; }
-      const draft = safeParseJson<Partial<QuestionnaireData> | null>(row.data, null);
+      const draft = safeParseJson<NewEntityDraftPayload | null>(row.data, null);
       set({ currentDraft: draft });
       return draft;
     } catch { return null; }

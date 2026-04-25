@@ -49,6 +49,15 @@ export type RelationshipSnapshotRow = typeof schema.relationshipSnapshots.$infer
 export type RelationshipSnapshotInsert = typeof schema.relationshipSnapshots.$inferInsert;
 export type OpenLoopRow = typeof schema.openLoops.$inferSelect;
 export type OpenLoopInsert = typeof schema.openLoops.$inferInsert;
+export type SessionStateRow = typeof schema.sessionState.$inferSelect;
+export type SessionStateInsert = typeof schema.sessionState.$inferInsert;
+/** SU-044 Phase 3 — JSON-safe embedding row from list-for-entity. */
+export type MemoryEmbeddingListRow = {
+  memoryId: string;
+  memoryKind: string;
+  modelName: string | null;
+  embedding: number[];
+};
 
 // Shape the server accepts on `POST /api/db/accounts/put` — either a
 // fresh registration payload or a profile update.  Mirrors
@@ -602,6 +611,14 @@ export async function deleteSession(id: string): Promise<void> {
   await post('chat/session/delete', { id });
 }
 
+export async function getSessionState(sessionId: string): Promise<SessionStateRow | null> {
+  return post<SessionStateRow | null>('chat/session-state/get', { sessionId });
+}
+
+export async function upsertSessionState(data: SessionStateInsert): Promise<void> {
+  await post('chat/session-state/upsert', data as unknown as Record<string, unknown>);
+}
+
 // --- Chat Messages ---
 
 export async function listMessages(sessionId: string): Promise<ChatMessageRow[]> {
@@ -690,6 +707,14 @@ export async function insertMemoryFacts(data: MemoryFactInsert[]): Promise<void>
   });
 }
 
+/** Merge by entityId + mergeKey when mergeKey is set; otherwise plain insert. */
+export async function upsertMemoryFactMerge(data: MemoryFactInsert): Promise<string | null> {
+  const res = await post<{ ok: boolean; id: string | null }>('memory/facts/upsert-merge', {
+    fact: data as unknown as Record<string, unknown>,
+  });
+  return res?.id ?? null;
+}
+
 // --- Memory Summaries (backup/restore) ---
 
 export async function listMemorySummaries(entityId: string): Promise<MemorySummaryRow[]> {
@@ -754,6 +779,37 @@ export async function listOpenLoops(entityId: string): Promise<OpenLoopRow[]> {
 export async function insertOpenLoops(data: OpenLoopInsert[]): Promise<void> {
   await post('memory/loops/insert-batch', {
     loops: data as unknown as Record<string, unknown>[],
+  });
+}
+
+// --- Memory embeddings (SU-044 Phase 3) ---
+
+export async function upsertMemoryEmbedding(args: {
+  memoryId: string;
+  memoryKind: 'event' | 'fact';
+  modelName: string;
+  embedding: number[];
+}): Promise<void> {
+  await post('memory/embeddings/upsert', args as Record<string, unknown>);
+}
+
+export async function listMemoryEmbeddingsForEntity(
+  entityId: string,
+  modelName?: string,
+): Promise<MemoryEmbeddingListRow[]> {
+  return post<MemoryEmbeddingListRow[]>('memory/embeddings/list-for-entity', {
+    entityId,
+    ...(modelName ? { modelName } : {}),
+  });
+}
+
+export async function deleteMemoryEmbeddingsForEntity(
+  entityId: string,
+  modelName?: string,
+): Promise<void> {
+  await post('memory/embeddings/delete-for-entity', {
+    entityId,
+    ...(modelName ? { modelName } : {}),
   });
 }
 

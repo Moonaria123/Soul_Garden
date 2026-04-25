@@ -1,6 +1,13 @@
 import type { ConsciousnessEntity, ChatSession } from '@/types';
 import JSZip from 'jszip';
 import { formatChatAsMarkdown } from '@/lib/utils/chat-export';
+import type {
+  MemoryEventRow,
+  MemoryFactRow,
+  MemorySummaryRow,
+  OpenLoopRow,
+  RelationshipSnapshotRow,
+} from '@/lib/db/db-client';
 
 // ============================================================
 // OpenClaw Export — FR-302
@@ -12,6 +19,14 @@ interface OpenClawExportInput {
   entity: ConsciousnessEntity;
   chatSession?: ChatSession | null;
   targetPath: string;
+  /** SU-044 — when present, CONVERSATION_MEMORY.md prefers L1/L2 rows over raw snippets. */
+  structuredMemory?: {
+    events: MemoryEventRow[];
+    facts: MemoryFactRow[];
+    openLoops: OpenLoopRow[];
+    summaries?: MemorySummaryRow[];
+    relationship?: RelationshipSnapshotRow | null;
+  };
 }
 
 interface OpenClawDocSet {
@@ -262,9 +277,119 @@ function buildConversationMemory(chatSession: ChatSession, entityName: string): 
   return content.trim();
 }
 
+function relationshipExportHasSignal(row: RelationshipSnapshotRow | null | undefined): boolean {
+  if (!row) return false;
+  return (
+    row.affinityScore != null ||
+    row.trustScore != null ||
+    row.emotionalTemperature != null ||
+    row.boundarySensitivity != null ||
+    (row.preferredAddressingStyle != null && row.preferredAddressingStyle.trim() !== '')
+  );
+}
+
+function buildStructuredConversationMemory(
+  entityName: string,
+  chatSession: ChatSession,
+  structured: NonNullable<OpenClawExportInput['structuredMemory']>,
+): string {
+  const openLoops = structured.openLoops.filter((l) => l.status === 'open');
+  const summaries = structured.summaries ?? [];
+  const rel = structured.relationship ?? null;
+  const hasRows =
+    structured.events.length > 0 ||
+    structured.facts.length > 0 ||
+    openLoops.length > 0 ||
+    summaries.length > 0 ||
+    relationshipExportHasSignal(rel);
+  if (!hasRows) {
+    return buildConversationMemory(chatSession, entityName);
+  }
+
+  let content = `# ${entityName} — 对话持续记忆\n\n`;
+  content += `> 来自 Soul Upload 对话期记忆系统（FR-204）。与 \`MEMORY.md\`（素材期、可编辑）**相互独立**。\n`;
+  content += `> 梦境或外部检索来源在条目中会标注 \`source\`。\n\n`;
+
+  if (summaries.length > 0) {
+    const sortedSum = [...summaries].sort(
+      (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+    );
+    content += `## 主题摘要（压缩）\n\n`;
+    for (const s of sortedSum) {
+      content += `- **${s.createdAt}** [${s.summaryScope}]：${s.summaryText}\n`;
+    }
+    content += '\n';
+  }
+
+  if (relationshipExportHasSignal(rel)) {
+    content += `## 关系状态快照\n\n`;
+    const bits: string[] = [];
+    if (rel!.affinityScore != null) bits.push(`亲和 ${rel!.affinityScore!.toFixed(2)}`);
+    if (rel!.trustScore != null) bits.push(`信任 ${rel!.trustScore!.toFixed(2)}`);
+    if (rel!.emotionalTemperature != null)
+      bits.push(`情绪温度 ${rel!.emotionalTemperature!.toFixed(2)}`);
+    if (rel!.boundarySensitivity != null)
+      bits.push(`边界敏感 ${rel!.boundarySensitivity!.toFixed(2)}`);
+    if (rel!.preferredAddressingStyle?.trim())
+      bits.push(`称呼偏好：${rel!.preferredAddressingStyle.trim()}`);
+    content += `${bits.join(' · ')}\n\n`;
+  }
+
+  if (structured.facts.length > 0) {
+    content += `## 长期与稳定事实\n\n`;
+    for (const f of structured.facts) {
+      content += `- **${f.factType}**（merge: ${f.mergeKey ?? '—'}）：${f.statement}\n`;
+    }
+    content += '\n';
+  }
+
+  if (structured.events.length > 0) {
+    content += `## 近期重要事件\n\n`;
+    const sorted = [...structured.events].sort(
+      (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+    );
+    for (const e of sorted) {
+      const q = e.quoteSnippet ? `\n  > 原话：${e.quoteSnippet}` : '';
+      content += `- **${e.createdAt}** [${e.source}] **${e.eventType}**：${e.summary}${q}\n`;
+    }
+    content += '\n';
+  }
+
+  if (openLoops.length > 0) {
+    content += `## 未完成话题\n\n`;
+    for (const l of openLoops) {
+      content += `- **${l.loopType}**：${l.topic}`;
+      if (l.nextFollowupHint) content += ` — ${l.nextFollowupHint}`;
+      content += '\n';
+    }
+    content += '\n';
+  }
+
+  if (chatSession.summaries.length > 0) {
+    content += `## 会话滚动摘要（L0）\n\n`;
+    chatSession.summaries.forEach((summary, i) => {
+      content += `### 块 ${i + 1}\n\n${summary}\n\n`;
+    });
+  }
+
+  return content.trim();
+}
+
 export function generateOpenClawDocSet(input: OpenClawExportInput): OpenClawDocSet {
-  const { entity, chatSession, targetPath } = input;
-  const hasConvMemory = !!(chatSession && (chatSession.messages.length > 0 || chatSession.summaries.length > 0));
+  const { entity, chatSession, targetPath, structuredMemory } = input;
+  const hasStructured =
+    structuredMemory &&
+    (structuredMemory.events.length > 0 ||
+      structuredMemory.facts.length > 0 ||
+      structuredMemory.openLoops.some((l) => l.status === 'open') ||
+      (structuredMemory.summaries?.length ?? 0) > 0 ||
+      relationshipExportHasSignal(structuredMemory.relationship ?? null));
+  const hasConvMemory = !!(
+    chatSession &&
+    (hasStructured ||
+      chatSession.messages.length > 0 ||
+      chatSession.summaries.length > 0)
+  );
   const hasConvHistory = !!(chatSession && chatSession.messages.length > 0);
 
   const docs: OpenClawDocSet = {
@@ -281,7 +406,10 @@ export function generateOpenClawDocSet(input: OpenClawExportInput): OpenClawDocS
   }
 
   if (hasConvMemory && chatSession) {
-    docs['CONVERSATION_MEMORY.md'] = buildConversationMemory(chatSession, entity.name);
+    docs['CONVERSATION_MEMORY.md'] =
+      structuredMemory && hasStructured
+        ? buildStructuredConversationMemory(entity.name, chatSession, structuredMemory)
+        : buildConversationMemory(chatSession, entity.name);
   }
 
   return docs;
@@ -292,7 +420,26 @@ export async function exportOpenClawZip(
   chatSession: ChatSession | null,
   targetPath: string
 ): Promise<void> {
-  const docs = generateOpenClawDocSet({ entity, chatSession, targetPath });
+  const {
+    listMemoryEvents,
+    listMemoryFacts,
+    listOpenLoops,
+    listMemorySummaries,
+    getRelationshipSnapshot,
+  } = await import('@/lib/db/db-client');
+  const [events, facts, openLoops, summaries, relationship] = await Promise.all([
+    listMemoryEvents(entity.id),
+    listMemoryFacts(entity.id),
+    listOpenLoops(entity.id),
+    listMemorySummaries(entity.id),
+    getRelationshipSnapshot(entity.id),
+  ]);
+  const docs = generateOpenClawDocSet({
+    entity,
+    chatSession,
+    targetPath,
+    structuredMemory: { events, facts, openLoops, summaries, relationship },
+  });
   const slug = slugify(entity.name);
 
   const zip = new JSZip();

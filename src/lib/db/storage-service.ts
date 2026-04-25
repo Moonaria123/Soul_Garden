@@ -1,4 +1,4 @@
-import { eq, asc, sql } from 'drizzle-orm';
+import { and, eq, asc, sql, inArray } from 'drizzle-orm';
 import { type LibSQLDatabase } from 'drizzle-orm/libsql';
 import * as schema from './schema';
 
@@ -142,6 +142,7 @@ export async function upsertEntity(db: DB, data: typeof schema.entities.$inferIn
 }
 
 export async function deleteEntity(db: DB, id: string) {
+  await deleteMemoryEmbeddingsForEntity(db, id);
   await db.delete(schema.entities).where(eq(schema.entities.id, id));
 }
 
@@ -256,6 +257,51 @@ export async function deleteMessagesForSession(db: DB, sessionId: string) {
   await db.delete(schema.chatMessages).where(eq(schema.chatMessages.sessionId, sessionId));
 }
 
+// --- Session state (L0 working memory metadata, SU-044) ---
+
+export async function getSessionState(db: DB, sessionId: string) {
+  const rows = await db.select().from(schema.sessionState)
+    .where(eq(schema.sessionState.sessionId, sessionId))
+    .limit(1);
+  return rows[0] ?? null;
+}
+
+/**
+ * Upsert L0 session_state row keyed by chat session id.
+ * Does not replace chat_sessions.summaries — stores extraction / L0 hints.
+ * Undefined fields preserve existing DB values (partial client updates).
+ */
+export async function upsertSessionState(db: DB, data: typeof schema.sessionState.$inferInsert) {
+  const prev = await getSessionState(db, data.sessionId);
+  const merged: typeof schema.sessionState.$inferInsert = {
+    sessionId: data.sessionId,
+    workingSummary:
+      data.workingSummary === undefined ? (prev?.workingSummary ?? null) : data.workingSummary,
+    lastSummarizedMessageId:
+      data.lastSummarizedMessageId === undefined
+        ? (prev?.lastSummarizedMessageId ?? null)
+        : data.lastSummarizedMessageId,
+    lastMemoryExtractedAt:
+      data.lastMemoryExtractedAt === undefined
+        ? (prev?.lastMemoryExtractedAt ?? null)
+        : data.lastMemoryExtractedAt,
+    status: data.status ?? prev?.status ?? 'active',
+  };
+  await db.insert(schema.sessionState).values(merged).onConflictDoUpdate({
+    target: schema.sessionState.sessionId,
+    set: {
+      workingSummary: merged.workingSummary ?? null,
+      lastSummarizedMessageId: merged.lastSummarizedMessageId ?? null,
+      lastMemoryExtractedAt: merged.lastMemoryExtractedAt ?? null,
+      status: merged.status ?? 'active',
+    },
+  });
+}
+
+export async function deleteSessionState(db: DB, sessionId: string) {
+  await db.delete(schema.sessionState).where(eq(schema.sessionState.sessionId, sessionId));
+}
+
 // --- User Profiles ---
 
 export async function getUserProfile(db: DB, id: string = 'global-user-profile') {
@@ -354,6 +400,45 @@ export async function deleteMemoryFactsForEntity(db: DB, entityId: string) {
   await db.delete(schema.memoryFacts).where(eq(schema.memoryFacts.entityId, entityId));
 }
 
+/**
+ * Insert a fact, or merge into an existing row with the same entityId + mergeKey.
+ * Rows without mergeKey always insert (subject to PK collision only).
+ */
+export async function upsertMemoryFactByMergeKey(
+  db: DB,
+  row: typeof schema.memoryFacts.$inferInsert,
+): Promise<string | null> {
+  if (!row.mergeKey) {
+    await db.insert(schema.memoryFacts).values(row).onConflictDoNothing();
+    return row.id;
+  }
+  const hit = await db.select({ id: schema.memoryFacts.id })
+    .from(schema.memoryFacts)
+    .where(
+      and(
+        eq(schema.memoryFacts.entityId, row.entityId),
+        eq(schema.memoryFacts.mergeKey, row.mergeKey),
+      ),
+    )
+    .limit(1);
+  const existingId = hit[0]?.id;
+  const now = new Date().toISOString();
+  if (existingId) {
+    await db.update(schema.memoryFacts)
+      .set({
+        statement: row.statement,
+        evidenceRefs: row.evidenceRefs ?? null,
+        salienceScore: row.salienceScore,
+        confidence: row.confidence,
+        updatedAt: now,
+      })
+      .where(eq(schema.memoryFacts.id, existingId));
+    return existingId;
+  }
+  await db.insert(schema.memoryFacts).values(row).onConflictDoNothing();
+  return row.id;
+}
+
 // --- Memory Summaries ---
 
 export async function getMemorySummariesForEntity(db: DB, entityId: string) {
@@ -420,4 +505,137 @@ export async function insertOpenLoops(
 
 export async function deleteOpenLoopsForEntity(db: DB, entityId: string) {
   await db.delete(schema.openLoops).where(eq(schema.openLoops.entityId, entityId));
+}
+
+// --- Memory embeddings (SU-044 Phase 3) — BLOB stores Float32 bytes ---
+
+const EMBEDDING_IN_CHUNK = 400;
+
+function float32ArrayToBytes(values: number[]): Uint8Array {
+  const f32 = new Float32Array(values);
+  return new Uint8Array(f32.buffer, f32.byteOffset, f32.byteLength);
+}
+
+/** Decode libsql/drizzle blob to number[] (client-safe JSON). */
+export function memoryEmbeddingBlobToFloats(blob: unknown): number[] {
+  if (blob == null) return [];
+  if (blob instanceof ArrayBuffer) {
+    return Array.from(new Float32Array(blob));
+  }
+  if (blob instanceof Uint8Array) {
+    const aligned = blob.byteOffset % 4 === 0 && blob.byteLength % 4 === 0;
+    if (aligned) {
+      return Array.from(new Float32Array(blob.buffer, blob.byteOffset, blob.byteLength / 4));
+    }
+    const copy = new Uint8Array(blob);
+    return Array.from(new Float32Array(copy.buffer, copy.byteOffset, copy.byteLength / 4));
+  }
+  if (typeof Buffer !== 'undefined' && Buffer.isBuffer(blob)) {
+    return Array.from(new Float32Array(blob.buffer, blob.byteOffset, blob.byteLength / 4));
+  }
+  return [];
+}
+
+export async function upsertMemoryEmbedding(
+  db: DB,
+  args: {
+    memoryId: string;
+    memoryKind: 'event' | 'fact';
+    modelName: string;
+    embedding: number[];
+  },
+): Promise<void> {
+  const bytes = float32ArrayToBytes(args.embedding);
+  const now = new Date().toISOString();
+  await db
+    .insert(schema.memoryEmbeddings)
+    .values({
+      memoryId: args.memoryId,
+      memoryKind: args.memoryKind,
+      embedding: bytes,
+      modelName: args.modelName,
+      createdAt: now,
+    })
+    .onConflictDoUpdate({
+      target: [schema.memoryEmbeddings.memoryId, schema.memoryEmbeddings.memoryKind],
+      set: {
+        embedding: bytes,
+        modelName: args.modelName,
+        createdAt: now,
+      },
+    });
+}
+
+async function memoryRowIdsForEntity(db: DB, entityId: string): Promise<string[]> {
+  const [events, facts] = await Promise.all([
+    db.select({ id: schema.memoryEvents.id }).from(schema.memoryEvents).where(eq(schema.memoryEvents.entityId, entityId)).all(),
+    db.select({ id: schema.memoryFacts.id }).from(schema.memoryFacts).where(eq(schema.memoryFacts.entityId, entityId)).all(),
+  ]);
+  return [...events.map((e) => e.id), ...facts.map((f) => f.id)];
+}
+
+export async function listMemoryEmbeddingsForEntity(
+  db: DB,
+  entityId: string,
+  modelName: string | undefined,
+): Promise<
+  Array<{
+    memoryId: string;
+    memoryKind: string;
+    modelName: string | null;
+    embedding: number[];
+  }>
+> {
+  const ids = await memoryRowIdsForEntity(db, entityId);
+  if (ids.length === 0) return [];
+  const out: Array<{
+    memoryId: string;
+    memoryKind: string;
+    modelName: string | null;
+    embedding: number[];
+  }> = [];
+  for (let i = 0; i < ids.length; i += EMBEDDING_IN_CHUNK) {
+    const part = ids.slice(i, i + EMBEDDING_IN_CHUNK);
+    const rows = await db
+      .select()
+      .from(schema.memoryEmbeddings)
+      .where(
+        modelName
+          ? and(inArray(schema.memoryEmbeddings.memoryId, part), eq(schema.memoryEmbeddings.modelName, modelName))
+          : inArray(schema.memoryEmbeddings.memoryId, part),
+      )
+      .all();
+    for (const r of rows) {
+      out.push({
+        memoryId: r.memoryId,
+        memoryKind: r.memoryKind,
+        modelName: r.modelName ?? null,
+        embedding: memoryEmbeddingBlobToFloats(r.embedding),
+      });
+    }
+  }
+  return out;
+}
+
+/**
+ * Delete embedding rows for all memory_events / memory_facts of this entity.
+ * @param modelName - when set, only rows with this model_name
+ */
+export async function deleteMemoryEmbeddingsForEntity(
+  db: DB,
+  entityId: string,
+  modelName?: string | null,
+): Promise<void> {
+  const ids = await memoryRowIdsForEntity(db, entityId);
+  if (ids.length === 0) return;
+  for (let i = 0; i < ids.length; i += EMBEDDING_IN_CHUNK) {
+    const part = ids.slice(i, i + EMBEDDING_IN_CHUNK);
+    await db
+      .delete(schema.memoryEmbeddings)
+      .where(
+        modelName
+          ? and(inArray(schema.memoryEmbeddings.memoryId, part), eq(schema.memoryEmbeddings.modelName, modelName))
+          : inArray(schema.memoryEmbeddings.memoryId, part),
+      );
+  }
 }

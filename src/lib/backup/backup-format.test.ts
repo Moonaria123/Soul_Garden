@@ -20,7 +20,7 @@ const baseManifest = (overrides: Partial<BackupManifest> = {}): BackupManifest =
   version: BACKUP_FORMAT_VERSION,
   type: 'chat',
   scope: 'chat-only',
-  appVersion: '0.1.0',
+  appVersion: '1.1.0.1',
   createdAt: '2026-04-19T00:00:00Z',
   checksum: 'deadbeef',
   encrypted: false,

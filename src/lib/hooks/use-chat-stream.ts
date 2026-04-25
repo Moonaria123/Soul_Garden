@@ -29,6 +29,12 @@ import {
   truncateMessagesToBudget,
 } from '@/lib/llm/token-estimate';
 import { useT } from '@/lib/i18n';
+import {
+  extractAndPersistConversationMemory,
+  getMemoryExtractWatermark,
+  shouldTriggerMemoryExtraction,
+} from '@/lib/memory/memory-extraction';
+import { buildConversationMemoryPromptBlock } from '@/lib/memory/retrieve-for-prompt';
 
 interface UseChatStreamArgs {
   entity: ConsciousnessEntity | null;
@@ -165,6 +171,14 @@ export function useChatStream({ entity, userProfile }: UseChatStreamArgs) {
       const chatState = useChatStore.getState();
       const currentSession = chatState.currentSession;
 
+      let conversationMemoryBlock: string | undefined;
+      try {
+        conversationMemoryBlock =
+          (await buildConversationMemoryPromptBlock(entity.id, userMessage)) || undefined;
+      } catch (e) {
+        console.error('[retrieve-for-prompt] failed:', e);
+      }
+
       const systemPrompt = buildSystemPrompt(
         entity.name,
         entity.soulDocs,
@@ -173,6 +187,7 @@ export function useChatStream({ entity, userProfile }: UseChatStreamArgs) {
         userProfile,
         entity.questionnaire.step1,
         replyStyle,
+        conversationMemoryBlock,
       );
 
       // SU-ITER-096 · Bug A — the chat-store's `addMessage('user',...)`
@@ -359,6 +374,47 @@ export function useChatStream({ entity, userProfile }: UseChatStreamArgs) {
               await chatState.addSummary(summary.trim());
             } catch {
               // Summarization failure is not critical.
+            }
+          }
+
+          const sessionForMem = useChatStore.getState().currentSession;
+          const memoryOn = entity && (entity.continuousMemoryEnabled !== false);
+          if (sessionForMem && memoryOn) {
+            try {
+              const wm = await getMemoryExtractWatermark(sessionForMem.id);
+              if (shouldTriggerMemoryExtraction(sessionForMem.messages.length, wm)) {
+                await extractAndPersistConversationMemory({
+                  entityId: entity.id,
+                  sessionId: sessionForMem.id,
+                  messages: sessionForMem.messages,
+                  llmOptions: {
+                    apiKey: llmOptions.apiKey,
+                    baseURL: llmOptions.baseURL,
+                    model: llmOptions.model,
+                    temperature: llmOptions.temperature,
+                    apiType: llmOptions.apiType,
+                  },
+                });
+                try {
+                  const { maybeCompressTopicSummaries } = await import(
+                    '@/lib/memory/memory-summary-compression'
+                  );
+                  await maybeCompressTopicSummaries({
+                    entityId: entity.id,
+                    llmOptions: {
+                      apiKey: llmOptions.apiKey,
+                      baseURL: llmOptions.baseURL,
+                      model: llmOptions.model,
+                      temperature: llmOptions.temperature,
+                      apiType: llmOptions.apiType,
+                    },
+                  });
+                } catch (ce) {
+                  console.error('[memory-summary-compression] failed:', ce);
+                }
+              }
+            } catch (e) {
+              console.error('[memory-extraction] failed:', e);
             }
           }
         } finally {

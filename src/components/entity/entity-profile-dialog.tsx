@@ -2,6 +2,10 @@
 
 import { useState, useCallback, useEffect } from 'react';
 import type { ConsciousnessEntity } from '@/types';
+import * as dbClient from '@/lib/db/db-client';
+import type { RelationshipSnapshotRow } from '@/lib/db/db-client';
+import { RelationshipTierBadge } from '@/components/entity/relationship-tier-badge';
+import { useUserProfileStore } from '@/lib/store/user-profile-store';
 import {
   Dialog,
   DialogContent,
@@ -58,6 +62,8 @@ export function EntityProfileDialog({
   onEntityUpdate,
 }: EntityProfileDialogProps) {
   const t = useT();
+  const { profile: userProfile, loadProfile } = useUserProfileStore();
+  const [relSnapshot, setRelSnapshot] = useState<RelationshipSnapshotRow | null>(null);
 
   const s1 = entity.questionnaire.step1;
   const s4 = entity.questionnaire.step4;
@@ -75,6 +81,29 @@ export function EntityProfileDialog({
     setRegion(s1.region ?? '');
     setUserCallName(s4.userCallName ?? '');
   }, [open, entity.id, s1.informalNickname, s1.region, s4.userCallName]);
+
+  useEffect(() => {
+    void loadProfile();
+  }, [loadProfile, open]);
+
+  useEffect(() => {
+    if (!open || entity.status !== 'ready') {
+      setRelSnapshot(null);
+      return;
+    }
+    let cancelled = false;
+    void (async () => {
+      try {
+        const row = await dbClient.getRelationshipSnapshot(entity.id);
+        if (!cancelled) setRelSnapshot(row);
+      } catch {
+        if (!cancelled) setRelSnapshot(null);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [open, entity.id, entity.status]);
 
   const saveField = useCallback(
     async (path: 'step1' | 'step4', key: 'informalNickname' | 'region' | 'userCallName', value: string) => {
@@ -120,10 +149,17 @@ export function EntityProfileDialog({
         </DialogHeader>
 
         <div className="space-y-3">
-          <div className="flex items-center justify-center gap-2">
+          <div className="flex flex-col items-center justify-center gap-2">
             <Badge variant="outline" className="text-xs">
               {t(TYPE_KEYS[entity.type] || 'entity.type.custom')}
             </Badge>
+            {entity.status === 'ready' ? (
+              <RelationshipTierBadge
+                snapshot={relSnapshot}
+                userGender={userProfile?.gender}
+                entityGender={s1.gender}
+              />
+            ) : null}
           </div>
 
           {s4.relationshipType && (

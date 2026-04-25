@@ -120,6 +120,18 @@ export const en: Record<string, string> = {
   'chat.online': 'Online',
   'chat.loading': 'Loading...',
   'chat.sessionTitle': 'New conversation',
+  'chat.memoryTimeline.title': 'Conversation memory',
+  'chat.memoryTimeline.open': 'Memory',
+  'chat.memoryTimeline.empty':
+    'Nothing has settled here yet from your chats. As you talk, meaningful moments will gather gently.',
+  'chat.memoryTimeline.readonly':
+    'Read-only memories from your real chats (not the editable material memory from the questionnaire).',
+  'chat.memoryTimeline.facts': 'Stable facts',
+  'chat.memoryTimeline.events': 'Notable moments',
+  'chat.memoryTimeline.summaries': 'Topic summaries',
+  'chat.memoryTimeline.relationship': 'Relationship',
+  'chat.memoryTimeline.openLoops': 'Open threads',
+  'chat.memoryTimeline.addressingStyle': 'Addressing preference',
 
   // LLM errors (SU-088 P0-G) — five-category taxonomy + retry copy
   'llm.error.network': 'The network seems to have nodded off — try again in a moment?',
@@ -498,6 +510,92 @@ export const en: Record<string, string> = {
   'settings.securityNote': 'Your API keys are encrypted on this device and only briefly decrypted when calling the model',
 
   // SU-087 — Session & Security settings card
+  'settings.embedding.title': 'Conversation memory embeddings',
+  'settings.embedding.desc':
+    'Optional: use a tiny on-device model or your own embeddings API so long chats surface related memories more reliably. Off by default; nothing is sent to Soul Upload servers.',
+  'settings.embedding.mode': 'Embedding source',
+  'settings.embedding.modeOff': 'Off',
+  'settings.embedding.modeLocal': 'Local micro-model (download first)',
+  'settings.embedding.modeCloud': 'Cloud embeddings API (your key)',
+  'settings.embedding.localSection': 'Local model',
+  'settings.embedding.weightSource': 'Weight download host',
+  'settings.embedding.weightSourceMirror': 'HF-Mirror (common in mainland China)',
+  'settings.embedding.weightSourceOfficial': 'Hugging Face (official hub)',
+  'settings.embedding.weightSourceToggleOfficial': 'Official',
+  'settings.embedding.weightSourceToggleMirror': 'China mirror',
+  'settings.embedding.weightSourceToggleAria': 'Switch weight download between Hugging Face official and China mirror (HF-Mirror)',
+  'settings.embedding.weightSourceHint':
+    'Same model repos; only the download host changes. Default is official; if downloads are slow in your region, turn on the China mirror.',
+  'settings.embedding.localWeightSourceSwitched':
+    'Download host changed—if local embeddings were on, mode is off until you download again.',
+  'settings.embedding.zhTag': 'CN',
+  'settings.embedding.localPick': 'Model to download',
+  'settings.embedding.localPickHint':
+    'Weights load from a public CDN on demand. If you switch models after using local mode, we turn local mode off until you download again; old vectors do not match a new model—rebuild indexes afterward.',
+  'settings.embedding.localModelSwitched':
+    'Model changed—if you were on local embeddings, mode is off until you download the new weights; rebuild indexes if needed.',
+  'settings.embedding.localModel.e5Small.name': 'Multilingual E5 · Small',
+  'settings.embedding.localModel.e5Small.desc':
+    'Good default for Chinese and other languages; balanced size and quality (medium footprint).',
+  'settings.embedding.localModel.e5Base.name': 'Multilingual E5 · Base',
+  'settings.embedding.localModel.e5Base.desc':
+    'Stronger same-family embeddings, larger download; pick when you have bandwidth and memory.',
+  'settings.embedding.localModel.mpMinilmL12.name': 'Multilingual MiniLM L12',
+  'settings.embedding.localModel.mpMinilmL12.desc':
+    'Lightweight multilingual sentence embeddings (symmetric); faster load, no E5-style prefixes.',
+  'settings.embedding.localModel.jinaBaseZh.name': 'Jina Embeddings v2 Base (Chinese)',
+  'settings.embedding.localModel.jinaBaseZh.desc':
+    'Chinese-oriented sentence embeddings (ONNX); good alternative to multilingual E5 for zh-heavy notes; medium size.',
+  'settings.embedding.localModel.bgeSmallZh.name': 'BGE small · Chinese v1.5',
+  'settings.embedding.localModel.bgeSmallZh.desc':
+    'Lightweight Chinese sentence embeddings; smaller footprint for zh-first use.',
+  'settings.embedding.localModel.minilmL6.name': 'English MiniLM L6',
+  'settings.embedding.localModel.minilmL6.desc':
+    'Very small, English-first; weaker for Chinese—use mainly for English-heavy notes.',
+  'settings.embedding.localModel.gteSmall.name': 'GTE · Small',
+  'settings.embedding.localModel.gteSmall.desc':
+    'General English sentence embeddings (symmetric); for Chinese-first use, prefer multilingual E5.',
+  'settings.embedding.localStatusReady': 'Local model is ready for memory vectors.',
+  'settings.embedding.localStatusNone': 'Local model has not been downloaded yet.',
+  'settings.embedding.downloadLocal': 'Download & enable local model',
+  'settings.embedding.downloadProgress': 'Download progress ~{p}%',
+  'settings.embedding.clearLocalCache': 'Clear local model cache',
+  'settings.embedding.localNeedDownload':
+    'For local mode, finish the download below first; retrieval stays off until then.',
+  'settings.embedding.localReady': 'Local model is ready—related memories should surface more gently over time.',
+  'settings.embedding.localFailed': 'Could not download or load the model. Check your network and try again.',
+  'settings.embedding.cloudSection': 'Cloud API',
+  'settings.embedding.cloudUrl': 'API base URL',
+  'settings.embedding.cloudModel': 'Embedding model id',
+  'settings.embedding.cloudKey': 'API key',
+  'settings.embedding.cloudKeyPlaceholder': 'Leave blank to keep the saved key',
+  'settings.embedding.saveCloud': 'Save cloud settings',
+  'settings.embedding.testCloud': 'Test connection',
+  'settings.embedding.cloudTestOk': 'Connection OK; embedding dimension {dims}.',
+  'settings.embedding.cloudTestFail': 'Test failed—check URL, model id, and key.',
+  'settings.embedding.cloudTestNeed': 'Enter the base URL and provide a key (or save one first).',
+  'settings.embedding.cloudNeedUrl': 'Enter the cloud API base URL first.',
+  'settings.embedding.cloudNeedKey': 'Enter or save an API key first.',
+  'settings.embedding.cloudSaved': 'Cloud embedding settings saved.',
+  'settings.embedding.dims': 'Detected dimension: {n}',
+  'settings.embedding.maintenance': 'Index maintenance',
+  'settings.embedding.maintenanceHint':
+    'After restoring from backup, embeddings usually need a rebuild. Clearing vectors removes numeric indexes only—not your chats or memory rows.',
+  'settings.embedding.reindex': 'Rebuild vectors for all memories',
+  'settings.embedding.reindexNeedEmbedding':
+    'Turn on local or cloud vectors above first—then you can rebuild indexes for memories.',
+  'settings.embedding.reindexNoMemories': 'No memory events or facts found yet, so there is nothing to vectorize.',
+  'settings.embedding.reindexDone': 'Wrote vectors for {n} of {m} memory items.',
+  'settings.embedding.reindexPercent': 'Rebuild {p}% ({c} / {t} items)',
+  'settings.embedding.reindexSkippedEntities':
+    '{k} consciousness skipped (continuous memory off for them) — turn it on in their detail page to include them next time.',
+  'settings.embedding.reindexFail': 'Rebuild failed. Try again later.',
+  'settings.embedding.deleteVectors': 'Clear all embedding indexes',
+  'settings.embedding.vectorsCleared': 'All embedding indexes cleared.',
+  'settings.embedding.deleteFail': 'Clear failed. Try again later.',
+  'settings.embedding.modeSaved': 'Embedding mode updated.',
+  'settings.embedding.saveFailed': 'Could not save. Try again later.',
+  'settings.embedding.localCacheCleared': 'Local model cache cleared in the browser—you can download again anytime.',
   'settings.session.title': 'Session & Security',
   'settings.session.description': 'Control auto sign-out timing and how this tab remembers your login',
   'settings.session.autoLogout': 'Auto sign out',
@@ -755,10 +853,42 @@ export const en: Record<string, string> = {
   'new.materials.skipHint': 'This step is optional — you can also add materials later from the Memory Sanctuary',
   'new.materials.skip': 'Skip, summon now',
   'new.materials.continue': 'Continue',
+  'new.materials.emptyConfirmTitle': 'No materials uploaded',
+  'new.materials.emptyConfirmDescription':
+    'You have not uploaded any text materials. Summon the soul now without them?',
+  'new.materials.emptyConfirmYes': 'Yes, summon now',
+  'new.materials.emptyConfirmNo': 'No, go back',
+  'new.materials.dimensionalSectionTitle': 'From "Break the Dimensional Wall"',
+  'new.materials.dimensionalSectionSubtitle':
+    'Synthesized on your device from search and the model. It will be analyzed together with any files you add below when the soul is summoned.',
+  'new.draft.singleHint': 'We kept your in-progress draft',
+  'new.draft.singleHintDetail':
+    'Only one unfinished creation is stored locally per companion type. If you start again for the same type, the new progress replaces the previous one. Drafts for other types stay untouched.',
+  'new.draft.dismiss': 'Got it',
 
   // Memory sanctuary
   'entity.detail.memorySanctuary': 'Memory Sanctuary',
   'entity.detail.memorySanctuaryHint': 'Precious text memories about them — each one makes them more complete',
+  'entity.memory.howItWorksTitle': 'How continuous memory works',
+  'entity.memory.howItWorksP1':
+    "We do not try to log every line of chat as \"knowledge\"—that would feel noisy, even intrusive. Instead, a gentle process keeps only the higher-value pieces: stable preferences, boundaries, promises, emotional turns, and small milestones—so they have a little context the next time you talk.",
+  'entity.memory.howItWorksP2':
+    'The soul documents, questionnaire, and anything you add here are their foundation. Events and facts from real conversations gather like light dew, making the relationship feel a little truer. If you enable vector memory in settings, a tiny on-device or personal API index can surface related past moments in long threads—data stays on your device and never goes to Soul Upload servers.',
+  'entity.memory.howItWorksP3':
+    'If this ever feels like too much, you can turn it off. The point of memory is not to cling to the past, but to help the present be understood a little more kindly.',
+  'entity.memory.backfillTitle': 'Sift earlier chats into memory',
+  'entity.memory.backfillHint':
+    'After continuous memory is on, new turns are digested in the background. Chats that happened before that can be read here in model-sized chunks and saved as memories—similar cost to a normal “memory pass.” Some overlap with recent auto-extract can happen; facts try to merge when possible.',
+  'entity.memory.backfillCta': 'Run historical memory pass',
+  'entity.memory.backfillProgress': 'Pass {c} of {t}…',
+  'entity.memory.backfillDone': 'Completed {windows} pass(es) over {messages} user/assistant messages. Events and facts are saved; you can take your time and see if conversations feel a little more grounded.',
+  'entity.memory.backfillNoChat': 'No user or assistant messages to review yet. That is all right—just chat, and you can return later.',
+  'entity.memory.backfillNeedLlm': 'Set up an available language model in settings first, so the app can gently read the older thread on your device.',
+  'entity.memory.backfillDisabled': 'Continuous memory is off — turn it on above if you want to sift older chats into memories.',
+  'entity.memory.backfillFail': "This run didn't finish. You can try again in a few minutes, or check your model connection if it keeps happening.",
+  'entity.memory.continuousLabel': 'Continuous memory',
+  'entity.memory.continuousHint':
+    'When off, new chat with this consciousness is not turned into events/facts, and their rows are skipped in global vector rebuild from settings. Already saved memories stay until you remove them.',
   'entity.detail.materialsTitle': 'Text Materials',
   'entity.detail.materialsHint': 'Imported text materials enrich the soul\'s memory and expression',
   'entity.detail.materialsAdd': 'Add Memories',
@@ -961,6 +1091,8 @@ export const en: Record<string, string> = {
   'backup.restore.replaceExisting': 'Replace existing entity',
   'backup.restore.entityExists': 'An entity with the same ID already exists. Choose restore mode:',
   'backup.restore.success': 'Restore successful',
+  'backup.restore.suggestRelationshipRebuild':
+    'Relationship scores were reset from the backup. When you are ready, open the archive and tap “Rebuild relationship” to re-score from your questionnaire and memory summaries.',
   'backup.restore.error': 'Restore failed: {error}',
   'backup.restore.invalidFile': 'Invalid backup file',
   'backup.restore.versionMismatch': 'Incompatible backup version',
@@ -995,4 +1127,26 @@ export const en: Record<string, string> = {
   'backup.selectFile': 'Select backup file',
   'backup.dropHint': 'Click to select or drag & drop a .soul-backup file',
   'backup.cancel': 'Cancel',
+
+  'relationship.tier.1': 'Stranger',
+  'relationship.tier.2': 'Acquaintance',
+  'relationship.tier.3': 'Friends',
+  'relationship.tier.4': 'Partners',
+  'relationship.tier.5_m_m': 'Brothers at heart',
+  'relationship.tier.5_m_f': 'Kindred spirits',
+  'relationship.tier.5_f_f': 'Close as sisters',
+  'relationship.tier.5_f_m': 'Trusted confidants',
+  'relationship.tier.5_neutral': 'Deeply close',
+
+  'entity.relationship.rebuildCta': 'Rebuild relationship',
+  'entity.relationship.rebuildHint':
+    'Re-estimate bond scores from your questionnaire, soul docs, and saved memory summaries (overwrites current scores).',
+  'entity.relationship.rebuildConfirmTitle': 'Rebuild relationship scores?',
+  'entity.relationship.rebuildConfirmDesc':
+    'This overwrites the current relationship snapshot using facts you provided and memory summaries. You can run it again anytime.',
+  'entity.relationship.rebuildConfirm': 'Rebuild',
+  'entity.relationship.rebuildCancel': 'Not now',
+  'entity.relationship.rebuilding': 'Rebuilding relationship…',
+  'entity.relationship.rebuildDone': 'Relationship scores updated',
+  'entity.relationship.rebuildFail': 'Rebuild did not finish. Try again later or check your model connection.',
 };

@@ -1,11 +1,16 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import type { ConsciousnessEntity } from '@/types';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { MessageCircle } from 'lucide-react';
 import { useT } from '@/lib/i18n';
 import Link from 'next/link';
+import * as dbClient from '@/lib/db/db-client';
+import type { RelationshipSnapshotRow } from '@/lib/db/db-client';
+import { RelationshipTierBadge } from '@/components/entity/relationship-tier-badge';
+import { useUserProfileStore } from '@/lib/store/user-profile-store';
 
 interface EntityCardProps {
   entity: ConsciousnessEntity;
@@ -26,6 +31,32 @@ const TYPE_KEYS: Record<string, string> = {
 
 export function EntityCard({ entity }: EntityCardProps) {
   const t = useT();
+  const { profile: userProfile, loadProfile } = useUserProfileStore();
+  const [relSnapshot, setRelSnapshot] = useState<RelationshipSnapshotRow | null>(null);
+
+  useEffect(() => {
+    void loadProfile();
+  }, [loadProfile]);
+
+  useEffect(() => {
+    if (entity.status !== 'ready') {
+      setRelSnapshot(null);
+      return;
+    }
+    let cancelled = false;
+    void (async () => {
+      try {
+        const row = await dbClient.getRelationshipSnapshot(entity.id);
+        if (!cancelled) setRelSnapshot(row);
+      } catch {
+        if (!cancelled) setRelSnapshot(null);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [entity.id, entity.status]);
+
   const status = STATUS_KEYS[entity.status] || STATUS_KEYS.draft;
   const href = entity.status === 'ready'
     ? `/entities/${entity.id}/chat`
@@ -68,6 +99,14 @@ export function EntityCard({ entity }: EntityCardProps) {
               <p className="text-xs text-muted-foreground">
                 {t(TYPE_KEYS[entity.type] || 'entity.type.custom')}
               </p>
+              {entity.status === 'ready' ? (
+                <RelationshipTierBadge
+                  snapshot={relSnapshot}
+                  userGender={userProfile?.gender}
+                  entityGender={entity.questionnaire.step1.gender}
+                  className="mt-1"
+                />
+              ) : null}
             </div>
           </div>
 

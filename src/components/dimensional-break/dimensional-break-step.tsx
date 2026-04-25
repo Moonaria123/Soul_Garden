@@ -31,6 +31,9 @@ interface DimensionalBreakStepProps {
   workName: string;
   webSearchMaterials: TextMaterial[];
   onMaterialsChange: (materials: TextMaterial[]) => void;
+  /** Lifted to parent so dimension UI persists when leaving this step and returning. */
+  dimensionalBreakResult: DimensionalBreakResult | null;
+  onDimensionalBreakResultChange: (result: DimensionalBreakResult | null) => void;
 }
 
 export function DimensionalBreakStep({
@@ -38,12 +41,13 @@ export function DimensionalBreakStep({
   workName,
   webSearchMaterials,
   onMaterialsChange,
+  dimensionalBreakResult: result,
+  onDimensionalBreakResultChange: setResult,
 }: DimensionalBreakStepProps) {
   const t = useT();
   const { handleError: handleLlmError } = useLlmCall();
   const [isSearching, setIsSearching] = useState(false);
   const [progress, setProgress] = useState<string | undefined>();
-  const [result, setResult] = useState<DimensionalBreakResult | null>(null);
   const [expandedDims, setExpandedDims] = useState<Set<string>>(new Set());
   const [wfSteps, setWfSteps] = useState<WorkflowStep[]>([]);
 

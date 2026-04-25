@@ -74,7 +74,7 @@ describe('planEntityRestoreOps', () => {
     expect(ops[0].kind).toBe('upsert-entity');
   });
 
-  it('omits insert ops for empty collections', () => {
+  it('omits insert ops for empty collections but adds default relationship snapshot', () => {
     const ops = planEntityRestoreOps(
       makePayload({
         chat: { sessions: [], messages: [] },
@@ -84,6 +84,9 @@ describe('planEntityRestoreOps', () => {
     );
     const insertKinds = ops.filter((o) => o.kind.startsWith('insert-')).map((o) => o.kind);
     expect(insertKinds).toEqual([]);
+    const relUpserts = ops.filter((o) => o.kind === 'upsert-relationshipSnapshot');
+    expect(relUpserts).toHaveLength(1);
+    expect((relUpserts[0] as { row: { affinityScore: number } }).row.affinityScore).toBe(0);
   });
 });
 

@@ -1,4 +1,10 @@
 import type { NextConfig } from "next";
+import path from "path";
+
+/** Webpack: absolute path to stub (Windows-safe). */
+const NODE_CORE_EMPTY = path.join(process.cwd(), "src", "lib", "shims", "node-empty.ts");
+/** Turbopack: project-relative only (absolute paths break on Windows — see Next error). */
+const NODE_CORE_EMPTY_REL = "./src/lib/shims/node-empty.ts" as const;
 
 // SU-ITER-092-batch1 · baseline security response headers.
 // Scope: single-user local-first installs today; prod/dev unified per user
@@ -18,10 +24,16 @@ const CSP_DIRECTIVES: Record<string, string[]> = {
   "img-src": ["'self'", "data:", "blob:"],
   // Fonts: inline data URLs are common for glyph subsets.
   "font-src": ["'self'", "data:"],
-  // XHR / fetch — local LLM providers typically resolved at runtime, so we
-  // restrict to 'self' here and allow user-configured providers through the
-  // Node proxy rather than loosening the browser CSP.
-  "connect-src": ["'self'"],
+  // XHR / fetch — local LLM via 'self' proxy; SU-044 local embeddings fetch
+  // public model weights from Hugging Face (hub + LFS + Xet CAS bridge) and jsDelivr.
+  "connect-src": [
+    "'self'",
+    "https://huggingface.co",
+    "https://cdn-lfs.huggingface.co",
+    "https://cas-bridge.xethub.hf.co",
+    "https://hf-mirror.com",
+    "https://cdn.jsdelivr.net",
+  ],
   // Media (audio preview / speech synthesis output) stays local+blob only.
   "media-src": ["'self'", "blob:"],
   "worker-src": ["'self'", "blob:"],
@@ -81,6 +93,26 @@ const SECURITY_HEADERS = [
 const nextConfig: NextConfig = {
   output: "standalone",
   serverExternalPackages: ["@libsql/client"],
+  // SU-044 Phase 3 — @xenova/transformers uses ESM + WASM; compile for client chunks.
+  transpilePackages: ["@xenova/transformers"],
+  // @xenova/transformers `env.js` calls Object.keys(fs) at import time; the client
+  // bundle must not leave `fs` / `path` as undefined (throws TypeError).
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      config.resolve.alias = {
+        ...config.resolve.alias,
+        fs: NODE_CORE_EMPTY,
+        path: NODE_CORE_EMPTY,
+      };
+    }
+    return config;
+  },
+  turbopack: {
+    resolveAlias: {
+      fs: { browser: NODE_CORE_EMPTY_REL },
+      path: { browser: NODE_CORE_EMPTY_REL },
+    },
+  },
   async headers() {
     return [
       // SU-ITER-092-batch1 · baseline security headers applied site-wide.

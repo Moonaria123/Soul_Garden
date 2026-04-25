@@ -43,6 +43,7 @@ import Link from 'next/link';
 import { useT } from '@/lib/i18n';
 import { useLocaleStore } from '@/lib/i18n';
 import { SearchToolsConfigCard } from '@/components/settings/search-tools-config';
+import { EmbeddingSettingsCard } from '@/components/settings/embedding-settings-card';
 import { SearchWhitelistCard } from '@/components/settings/search-whitelist-config';
 import { BackupSettingsCard } from '@/components/settings/backup-settings-card';
 import { SessionSettingsCard } from '@/components/settings/session-settings-card';
@@ -207,6 +208,9 @@ export default function SettingsPage() {
 
       {/* Web Search Tools (V1.2) */}
       <SearchToolsConfigCard />
+
+      {/* SU-044 Phase 3 — local / cloud memory embeddings */}
+      <EmbeddingSettingsCard />
 
       {/* Web Search URL Whitelist (V1.2) */}
       <SearchWhitelistCard />

@@ -66,6 +66,10 @@ export const entities = sqliteTable('entities', {
   nickname: text('nickname'),
   region: text('region'),
   errorMessage: text('error_message'),
+  /** When false, new dialogue is not extracted to L1/L2 and vectors skip this entity. */
+  continuousMemoryEnabled: integer('continuous_memory_enabled', { mode: 'boolean' })
+    .notNull()
+    .default(true),
   createdAt: text('created_at').notNull().default(now),
   updatedAt: text('updated_at').notNull().default(now),
 });

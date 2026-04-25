@@ -170,7 +170,8 @@ export interface GlobalBackupPayload {
   config?: ConfigBackupPayload;
 }
 
-export const APP_VERSION = '0.1.0';
+/** Application release line; keep in sync with `soul-upload/package.json` `version`. */
+export const APP_VERSION = '1.1.0.1';
 
 // ------------------------------------------------------------
 // Version migration pipeline.

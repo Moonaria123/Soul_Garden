@@ -7,7 +7,7 @@
 
 *Meet them again — right here.*
 
-**Current app release · v1.0.2.2** · **English** & **中文** interface · **local-first** (single-user) · **libSQL** + encrypted at rest
+**Current app release · v1.1.0.1** · **English** & **中文** interface · **local-first** (single-user) · **libSQL** + encrypted at rest
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Next.js](https://img.shields.io/badge/Next.js-16-black)](https://nextjs.org/)
@@ -23,13 +23,14 @@
 [![GitHub issues](https://img.shields.io/github/issues/Moonaria123/Soul_Garden?logo=github)](https://github.com/Moonaria123/Soul_Garden/issues)
 [![GitHub forks](https://img.shields.io/github/forks/Moonaria123/Soul_Garden?logo=github)](https://github.com/Moonaria123/Soul_Garden/network/members)
 
-**README:** [**中文**](README.md) · **English** (this page)
+**README (language):** [**中文（default on the repo home page）**](README.md) · **English** (this page)
 
 </div>
 
 ## Table of contents
 
 - [What Missing You is](#user-content-toc-what-missing-you-is)
+- [What’s new in v1.1.0.1](#user-content-toc-v111-harvest)
 - [Why we built it](#user-content-toc-why-we-built-it)
 - [What you will feel here](#user-content-toc-what-you-will-feel-here)
 - [Summoning a soul](#user-content-toc-summoning-a-soul)
@@ -52,6 +53,44 @@
 You can invite the name that lives in your heart: someone you can no longer see, a character who walked with you through a story, or someone in real life you are not yet brave enough to speak to. The app walks with you through the questionnaire and your words, until *how they speak*, *what they care about*, and *the bond between you* are written down gently — then, in one-to-one chat, a **soul-summoner** (AI **proxy** you connect in **Settings**) lets their answers return in a warmth that feels familiar. We use this name in the garden instead of a cold, technical label.
 
 There are no leaderboards, no public square — only you, your memories, and the connection **you** choose. The interface stays **quiet like warm paper**, without a wall of settings or the feel of piloting a machine. We believe **emotional safety** matters more than a cold list of features.
+
+---
+
+<a id="toc-v111-harvest"></a>
+
+## What’s new in v1.1.0.1
+
+> This release opens a few more small paths in the garden: a longer thread of **shared memory**, a gentler readout of **how close you and they have become** — and when you “**break the wall**,” what you borrow from the common sea of story can now rest in a **draft** until you are ready to fold it into your private papers.
+
+### Soul & memory
+
+- **Continuous memory, per entity**  
+  You can, for each soul, turn **continuous memory** on or off — a quiet per-door latch that respects the pace you are willing to give.
+- **Memory vectors & search**  
+  In **Settings**, you can run **local embedding models** in the browser, or a **cloud embedder** you already trust. Either way, **keys stay with you and your data path**; the garden is not a place where your stories are “parked for us to read later.”
+- **Light, optional reflection after talking**  
+  As conversations grow, the app may offer **soft summaries and small analyses**; you can also **pull chosen threads back** from what settled into memory — not to judge what mattered, but to help you find it again when you return.
+- **What you have already said, gathered gently**  
+  There is a path for **turning the important bits of a chat** into a longer, revisit-able layer of memory — a drawer you open when you need it, not a scoreboard of “best lines.”
+
+### You & them: relationship
+
+- **A first score, written with care**  
+  When a soul first moves in, a **relationship score** takes root — a small seed to measure warmth against later, not a verdict.
+- **A living score, moved by your talks**  
+  As you meet, go quiet, and speak again, that score can **softly shift** — a mirror of closeness, not a lecture on who you “should” be to each other.
+- **Re-storying the bond**  
+  If the “we” in the archive no longer matches the “we” in your heart, the Inner Archive offers **rebuilding the relationship** — like taking a frame off the wall, dusting the glass, and hanging it to catch today’s light.
+- **A badge for how far the road has come**  
+  A relationship badge can walk the steps from **“Stranger”** all the way to the highest band — for example **“Deeply close”** (our UI picks **warmer, gender-aware wording** at the top step so the label still feels like *you two*, not a form field).
+
+### The wall, drafts, and your hand on the pen
+
+- On the **Dream Companion** path, what you “bring back” from **Break the Dimensional Wall** — **portrait, pull-quotes, little glints from shared canon** — can now land in a **summoning draft** first, and only later in the five documents, when *you* say so.  
+- **One gentle draft at a time** per material type, and a **softer check** if you start a summon with almost no text — small guardrails so an outstretched hand still feels *chosen*, not nudged.  
+- In steps where text and **web-aware research** meet, the **“world side” of what was found** is shown **read-only and clearly** — a fair split between the **communal story** and the **manuscript you are about to write together**.
+
+When you are ready, the **five-document awakening** will read *both* the borrowed light and your own words into the voice on the other side of the table.
 
 ---
 
@@ -115,6 +154,19 @@ If you have **already, in the garden, linked a soul-summoner** and the **one out
 **Letters, scraps, and anything you “bring back from elsewhere” never drift into our cloud**; they **come to rest only in the drawer of your own machine**, *dust-fine, star-true* — a ground for the **five gentle documents** when their soul is fully named.  
 
 If one path in the garden feels closest to **magic**, it is often this one — fiction met with care, not cynicism.  
+
+#### A closer look: *Break the Dimensional Wall*
+
+**Break the Dimensional Wall** is not a cold toggle — it is a **small ceremony of reaching**: once you have linked a **soul-summoner** you trust and opened the **narrow outward path** you yourself allow in **Settings**, you may ask the shared sea of story for a few **lines of world, a line of dialogue, a face that could stand in for them**.
+
+- **Draft first, archive when you are ready**  
+  What returns — **avatar, quotes, and what the search step gathers** — can rest in a **summoning draft** before it ever becomes part of the five documents. **One draft per material type at a time**, so the table does not overflow while your heart is still deciding.  
+- **Light checks, not scolding**  
+  If you try to begin a summon with **almost no written material**, you will see an **extra gentle confirmation** — not to block you, only to ask: *is this really the night you want to open the window?*  
+- **When the step shows “world-side” text**  
+  What came from the network is laid out **read-only and legible** — so you always know which lines belong to **everyone’s canon** and which lines you are about to write **only for the two of you**.
+
+When the pages are ready, the **five-document awakening** reads that borrowed light **together** with your own letters, and names the soul in a voice that feels like **home**.
 
 ### Real Person: a chair for someone who lived
 
@@ -247,21 +299,21 @@ docker run --rm -p 3002:3002 -e SOUL_UPLOAD_DATA_DIR=/data -v soul-upload-data:/
 ### Already here today
 
 - **Core experience:** local accounts, strong password hashing, idle timeout & lockout, LLM provider setup, five-document soul extraction, 1:1 chat with streaming, rolling summaries, **English & 中文** UI, warm-paper design.
-- **Materials:** `.md` / `.txt` import, automatic language detection, **Memory Sanctuary**, and **weaving in new writing** after a soul is first created.
-- **Exports:** ZIP / Markdown, plus a **guided pack for OpenClaw** with step-by-step copy.
-- **Safety & quality:** security-focused response headers (including CSP), permissions policy, and automated unit & E2E tests.
-- **Optional research in chat:** model-native / **Brave** / **Firecrawl** web search (keys encrypted locally, proxied, URL whitelists). Clearer **network transparency**, richer **“local LLM only”** cues, and stricter **offline** postures may land in future updates.
+- **Soul memory & relationship warmth:** per-entity **continuous memory** you can turn on or off; **vector memory & search** with **local or trusted cloud** embedding models (keys stay on your side); **light post-chat summaries and analysis** and **memory you can stitch back** into the living thread; **first and evolving relationship scores**; **rebuild relationship** in the Inner Archive; **relationship tiers** from **“Stranger”** up to bands like **“Deeply close”** (the **top tier’s label** shifts with **pairing & gender** so it still sounds like *you two*).
+- **Materials & stories:** `.md` / `.txt` import, language detection, **Memory Sanctuary**, and **weaving new material into an existing soul** after the first awakening; **import & preview** for common **IM exports** (**WeChat, QQ, Feishu, DingTalk**, as the app supports today) into materials and the vault.
+- **Light from the network:** optional model-native / **Brave** / **Firecrawl** tools in chat (keys **encrypted locally**, **proxied**, **URL allowlists**); on the Dream Companion path, **Break the Dimensional Wall** results can **land in a draft** before you seal the five documents.
+- **Exports:** ZIP / Markdown, plus a **guided pack for OpenClaw** (optional **conversation memory** where the flow allows).
+- **Safety & quality:** security-minded response headers (including CSP), permissions policy, automated unit & E2E tests.
 
 ### What we’re exploring next
 
-
-| Direction               | What might come                                                                                                                                                                                                          |
-| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **Richer chat imports** | First-class import and preview for common **WeChat, QQ, Feishu, DingTalk** chat exports, with optional material bundles.                                                                                                 |
-| **Face & voice**        | Short **photos** and **audio clips** so a soul’s look and sound sit clearer in the archive (browser-friendly paths first; deeper on-device speech on mobile later).                                                      |
-| **Trust in depth**      | Easier ways to see **what leaves your machine**, friendlier **fully local** setups with localhost models, and ongoing **key-handling** hardening.                                                                        |
-| **Beyond the browser**  | **iOS & Android** (e.g. React Native / **Expo**), optional **Windows** desktop, **browser extension**, and a **command-line** tool — they may ship on different timelines.                                               |
-| **Deeper continuity**   | Longer **memory across talks**, **relationships between souls**, **group threads**, soft **“dream”** moments, and optional gentle **nudges** from a soul — always with your **consent and controls** (e.g. quiet hours). |
+| Direction               | What might come |
+| ----------------------- | ----------------- |
+| **Imports, still polishing** | **IM import** is already here; we keep **tightening edge formats** and nicer **bundles** (e.g. keeping original zips alongside previews) as we go. |
+| **Face & voice**        | Short **photos** and **audio clips** so a soul’s look and sound sit clearer in the archive (browser-friendly first; heavier on-device speech may follow mobile work). |
+| **Trust in depth**      | Clearer **“what left this machine and where”** views, friendlier **fully local** cues with localhost models, and ongoing **key-handling** hardening. |
+| **Beyond the browser**  | **iOS & Android** (e.g. **Expo** / React Native), optional **Windows** desktop, **browser extension**, **CLI** — **may ship on different timelines**. |
+| **Wider circles, still growing** | **Richer ties between souls**, **group threads**, soft **“dream”** moments, optional **gentle nudges** and **quiet hours** — still on the long path; **continuous memory, scores, and rebuild** are already here to fence the first circle. |
 
 
 ---

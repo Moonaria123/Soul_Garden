@@ -139,6 +139,8 @@ export const EntityUpsertBody = z
     nickname: ShortText.nullable().optional(),
     region: ShortText.nullable().optional(),
     errorMessage: LongText.nullable().optional(),
+    /** SU-044 / entity row; `entityToRow` always sends this, must match strict schema. */
+    continuousMemoryEnabled: z.boolean().optional(),
     createdAt: OptionalTimestamp,
     updatedAt: OptionalTimestamp,
   })
@@ -154,6 +156,17 @@ export const SessionUpsertBody = z
     status: ShortText.optional(),
     createdAt: OptionalTimestamp,
     updatedAt: OptionalTimestamp,
+  })
+  .strict();
+
+/** L0 session_state row (SU-044); keyed by chat session id. */
+export const SessionStateUpsertBody = z
+  .object({
+    sessionId: Id,
+    workingSummary: LongText.nullable().optional(),
+    lastSummarizedMessageId: z.string().max(256).nullable().optional(),
+    lastMemoryExtractedAt: OptionalTimestamp,
+    status: ShortText.optional(),
   })
   .strict();
 
@@ -262,6 +275,13 @@ export const MemoryFactsBatchBody = z
   })
   .strict();
 
+/** Single fact upsert with mergeKey dedup (SU-044). */
+export const MemoryFactUpsertMergeBody = z
+  .object({
+    fact: LeafRowWithId,
+  })
+  .strict();
+
 export const MemorySummariesBatchBody = z
   .object({
     summaries: z.array(LeafRowWithId).max(MAX_SUMMARIES_PER_CALL),
@@ -271,6 +291,33 @@ export const MemorySummariesBatchBody = z
 export const OpenLoopsBatchBody = z
   .object({
     loops: z.array(LeafRowWithId).max(MAX_OPEN_LOOPS_PER_CALL),
+  })
+  .strict();
+
+/** SU-044 Phase 3 — memory_embeddings upsert (embedding as JSON float array). */
+const MAX_EMBEDDING_DIMS = 4096;
+export const MemoryEmbeddingUpsertBody = z
+  .object({
+    memoryId: Id,
+    memoryKind: z.enum(['event', 'fact']),
+    modelName: z.string().min(1).max(512),
+    embedding: z.array(z.number().finite()).min(1).max(MAX_EMBEDDING_DIMS),
+  })
+  .strict();
+
+export const MemoryEmbeddingsListBody = z
+  .object({
+    entityId: Id,
+    /** When set, only rows matching this model_name (activeModelKey). */
+    modelName: z.string().min(1).max(512).optional(),
+  })
+  .strict();
+
+export const MemoryEmbeddingsDeleteForEntityBody = z
+  .object({
+    entityId: Id,
+    /** When set, delete only rows with this model_name; otherwise all for entity memory ids. */
+    modelName: z.string().min(1).max(512).optional(),
   })
   .strict();
 
@@ -315,4 +362,5 @@ export const BATCH_CAPS = {
   summaries: MAX_SUMMARIES_PER_CALL,
   openLoops: MAX_OPEN_LOOPS_PER_CALL,
   messages: MAX_MESSAGES_PER_CALL,
+  embeddingDims: MAX_EMBEDDING_DIMS,
 } as const;

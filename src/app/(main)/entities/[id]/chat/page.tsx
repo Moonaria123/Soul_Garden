@@ -38,6 +38,7 @@ import {
   Download,
   Archive,
   ArchiveRestore,
+  Sparkles,
 } from 'lucide-react';
 import {
   formatChatAsMarkdown,
@@ -71,6 +72,7 @@ import {
 import Link from 'next/link';
 import { MessageBubble } from '@/components/chat/message-bubble';
 import { ChatComposer } from '@/components/chat/chat-composer';
+import { ConversationMemorySheet } from '@/components/chat/conversation-memory-sheet';
 import { useChatStream } from '@/lib/hooks/use-chat-stream';
 import { validateImageFile } from '@/lib/utils/image-validation';
 
@@ -111,6 +113,7 @@ export default function ChatPage({
   const { legacyPasswordProvider, dialog: legacyBackupDialog } =
     useLegacyBackupPasswordPrompt();
   const [isBackingUp, setIsBackingUp] = useState(false);
+  const [memorySheetOpen, setMemorySheetOpen] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const bgInputRef = useRef<HTMLInputElement>(null);
@@ -555,9 +558,28 @@ export default function ChatPage({
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            className="h-8 gap-1.5 text-xs font-normal hidden sm:inline-flex border-border/60 bg-card/40"
+            onClick={() => setMemorySheetOpen(true)}
+          >
+            <Sparkles className="h-3.5 w-3.5 opacity-80" aria-hidden />
+            {t('chat.memoryTimeline.open')}
+          </Button>
           <LanguageSwitcher />
         </div>
       </div>
+
+      <ConversationMemorySheet
+        entityId={entity?.id ?? null}
+        open={memorySheetOpen}
+        onOpenChange={setMemorySheetOpen}
+        refreshToken={
+          (allMessages.at(-1)?.timestamp ?? '') + (currentSession?.id ?? '')
+        }
+      />
 
       {/* Messages */}
       <ScrollArea className="flex-1 min-h-0 px-4 relative z-10" ref={scrollAreaRef as React.RefObject<HTMLDivElement>}>

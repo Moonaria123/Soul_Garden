@@ -9,6 +9,7 @@ import {
   EMPTY_SOUL_DOCS,
   QuestionnaireDataSchema,
   SoulDocsSchema,
+  hasRecoverableNewEntityDraft,
 } from './entity-schemas';
 
 let warnSpy: ReturnType<typeof vi.spyOn>;
@@ -139,5 +140,55 @@ describe('emptyQuestionnaire factory', () => {
 describe('EMPTY_SOUL_DOCS invariant', () => {
   it('validates against SoulDocsSchema', () => {
     expect(SoulDocsSchema.safeParse(EMPTY_SOUL_DOCS).success).toBe(true);
+  });
+});
+
+describe('hasRecoverableNewEntityDraft', () => {
+  it('returns false for null/empty and legacy questionnaire-only drafts with no progress', () => {
+    expect(hasRecoverableNewEntityDraft(null)).toBe(false);
+    expect(hasRecoverableNewEntityDraft(undefined)).toBe(false);
+    expect(
+      hasRecoverableNewEntityDraft({
+        entityType: 'fictional',
+        step1: emptyQuestionnaire().step1,
+        step2: emptyQuestionnaire().step2,
+        step3: emptyQuestionnaire().step3,
+        step4: emptyQuestionnaire().step4,
+      }),
+    ).toBe(false);
+  });
+
+  it('returns true when dimensional materials or structured break exist (new fields)', () => {
+    expect(
+      hasRecoverableNewEntityDraft({
+        webSearchMaterials: [
+          {
+            id: 'web-search-1',
+            filename: 'x.md',
+            content: 'body',
+            detectedLanguage: 'und',
+            detectedLanguageLabel: 'Auto',
+            fileSize: 4,
+            charCount: 4,
+            importedAt: new Date().toISOString(),
+          },
+        ],
+      }),
+    ).toBe(true);
+    expect(
+      hasRecoverableNewEntityDraft({
+        dimensionalBreakResult: {
+          dimensions: [{ key: 'worldview', content: 'x' }],
+          sources: [],
+          rawContent: '',
+        },
+      }),
+    ).toBe(true);
+  });
+
+  it('returns true for classic questionnaire progress (name or steps)', () => {
+    expect(hasRecoverableNewEntityDraft({ step1: { ...emptyQuestionnaire().step1, name: 'A' } })).toBe(
+      true,
+    );
   });
 });

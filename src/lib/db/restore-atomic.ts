@@ -1,6 +1,7 @@
 import { eq } from 'drizzle-orm';
 import { type LibSQLDatabase } from 'drizzle-orm/libsql';
 import { z } from 'zod';
+import { v4 as uuidv4 } from 'uuid';
 import * as schema from './schema';
 
 // ============================================================
@@ -214,6 +215,23 @@ export function planEntityRestoreOps(
   }
   for (const snap of payload.memory.relationshipSnapshots) {
     ops.push({ kind: 'upsert-relationshipSnapshot', row: snap });
+  }
+  if (payload.memory.relationshipSnapshots.length === 0) {
+    const now = new Date().toISOString();
+    ops.push({
+      kind: 'upsert-relationshipSnapshot',
+      row: {
+        id: uuidv4(),
+        entityId,
+        affinityScore: 0,
+        trustScore: 0,
+        emotionalTemperature: 0,
+        boundarySensitivity: 0,
+        preferredAddressingStyle: null,
+        lastMeaningfulContactAt: null,
+        updatedAt: now,
+      },
+    });
   }
   if (payload.memory.openLoops.length > 0) {
     ops.push({ kind: 'insert-openLoops', rows: payload.memory.openLoops });

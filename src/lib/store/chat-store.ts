@@ -6,6 +6,7 @@ import type { ChatSession, ChatMessage } from '@/types';
 import { CHAT_CONSTANTS } from '@/types';
 import { toast } from 'sonner';
 import * as dbClient from '@/lib/db/db-client';
+import { setMemoryExtractWatermark } from '@/lib/memory/memory-extraction';
 import { translate } from '@/lib/i18n';
 // SU-ITER-091-batch2 · P3-03 — consume the shared helper instead of
 // redeclaring a local copy; entity-store does the same.
@@ -135,6 +136,11 @@ export const useChatStore = create<ChatState>((set, get) => ({
           latest as unknown as Record<string, unknown>,
           msgRows.map((m) => messageRowToLocal(m as unknown as Record<string, unknown>)),
         );
+        try {
+          await setMemoryExtractWatermark(session.id, session.messages.length);
+        } catch (e) {
+          console.error('Failed to init memory extract watermark:', e);
+        }
         set({ currentSession: session, isLoading: false });
         return session;
       }
@@ -145,6 +151,18 @@ export const useChatStore = create<ChatState>((set, get) => ({
         createdAt: new Date().toISOString(), updatedAt: new Date().toISOString(),
       };
       await dbClient.upsertSession(sessionToRow(session));
+      try {
+        await dbClient.upsertSessionState({
+          sessionId: session.id,
+          workingSummary: null,
+          lastSummarizedMessageId: null,
+          lastMemoryExtractedAt: null,
+          status: 'active',
+        });
+        await setMemoryExtractWatermark(session.id, 0);
+      } catch (e) {
+        console.error('Failed to init session_state:', e);
+      }
       set({ currentSession: session, isLoading: false });
       return session;
     } catch (e) {
@@ -199,7 +217,17 @@ export const useChatStore = create<ChatState>((set, get) => ({
       updatedAt: new Date().toISOString(),
     };
     set({ currentSession: updated });
-    try { await dbClient.upsertSession(sessionToRow(updated)); }
+    try {
+      await dbClient.upsertSession(sessionToRow(updated));
+      const lastMsg = updated.messages.at(-1);
+      await dbClient.upsertSessionState({
+        sessionId: updated.id,
+        workingSummary: updated.summaries.join('\n\n---\n\n'),
+        lastSummarizedMessageId: lastMsg?.id ?? null,
+        lastMemoryExtractedAt: null,
+        status: 'active',
+      });
+    }
     catch (e) {
       console.error('Failed to persist summary:', e);
       set({ currentSession: session });
@@ -248,6 +276,13 @@ export const useChatStore = create<ChatState>((set, get) => ({
     try {
       await dbClient.deleteMessagesForSession(session.id);
       await dbClient.upsertSession(sessionToRow(updated));
+      await dbClient.upsertSessionState({
+        sessionId: session.id,
+        workingSummary: null,
+        lastSummarizedMessageId: null,
+        lastMemoryExtractedAt: null,
+        status: 'active',
+      });
     } catch (e) {
       console.error('Failed to clear chat history:', e);
       set({ currentSession: session });

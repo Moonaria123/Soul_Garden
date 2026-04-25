@@ -10,10 +10,26 @@ import { useProviderStore } from '@/lib/store/provider-store';
 import { extractSoul, enrichSoul } from '@/lib/agents/soul-extraction';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
+import { Switch } from '@/components/ui/switch';
+import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, MessageCircle, Download, Trash2, Flame, BookOpen, X, Archive, Sparkles, HardDriveDownload, HardDriveUpload } from 'lucide-react';
+import {
+  ArrowLeft,
+  MessageCircle,
+  Download,
+  Trash2,
+  Flame,
+  BookOpen,
+  X,
+  Archive,
+  Sparkles,
+  HardDriveDownload,
+  HardDriveUpload,
+  History,
+  RefreshCw,
+} from 'lucide-react';
 import { WorkflowProgress, type WorkflowStep } from '@/components/ui/workflow-progress';
 import Link from 'next/link';
 import { DeleteEntityDialog } from '@/components/entity/delete-entity-dialog';
@@ -25,8 +41,24 @@ import { DocumentUpload } from '@/components/materials/document-upload';
 import { ChatRecordUpload } from '@/components/materials/chat-record-upload';
 import { useT } from '@/lib/i18n';
 import { useLlmCall } from '@/lib/llm/use-llm-call';
+import { backfillDialogueMemoriesFromHistory } from '@/lib/memory/memory-backfill';
 import { BackupEntityDialog } from '@/components/backup/backup-entity-dialog';
 import { RestoreEntityDialog } from '@/components/backup/restore-entity-dialog';
+import {
+  seedRelationshipSnapshotFromFacts,
+  buildMemoryDigestForRelationshipRebuild,
+  upsertRelationshipSnapshotZeros,
+} from '@/lib/relationship/relationship-from-facts';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 
 export default function EntityDetailPage({
   params,
@@ -55,6 +87,10 @@ export default function EntityDetailPage({
   const [showOpenClawDialog, setShowOpenClawDialog] = useState(false);
   const [showBackupDialog, setShowBackupDialog] = useState(false);
   const [showRestoreDialog, setShowRestoreDialog] = useState(false);
+  const [backfilling, setBackfilling] = useState(false);
+  const [backfillProgress, setBackfillProgress] = useState<{ current: number; total: number } | null>(null);
+  const [showRebuildRelationshipConfirm, setShowRebuildRelationshipConfirm] = useState(false);
+  const [rebuildingRelationship, setRebuildingRelationship] = useState(false);
 
   const abortRef = useRef<AbortController | null>(null);
   const narrativeTimer = useRef<ReturnType<typeof setInterval>>(undefined);
@@ -157,6 +193,33 @@ export default function EntityDetailPage({
           setProgress(100);
           setCurrentExtractionStep('complete');
           setProgressMessage(t('extraction.complete'));
+          const llmOpts = await getActiveLLMOptions();
+          try {
+            if (llmOpts) {
+              await seedRelationshipSnapshotFromFacts({
+                entityId: entity.id,
+                questionnaire: entity.questionnaire,
+                soulDocs: docs,
+                llmOptions: {
+                  apiKey: llmOpts.apiKey,
+                  baseURL: llmOpts.baseURL,
+                  model: llmOpts.model,
+                  temperature: llmOpts.temperature,
+                  apiType: llmOpts.apiType,
+                },
+                mode: 'initial',
+              });
+            } else {
+              await upsertRelationshipSnapshotZeros(entity.id);
+            }
+          } catch (err) {
+            console.error('[seedRelationshipSnapshot]', err);
+            try {
+              await upsertRelationshipSnapshotZeros(entity.id);
+            } catch (e2) {
+              console.error('[upsertRelationshipSnapshotZeros]', e2);
+            }
+          }
           toast.success(t('entity.detail.awake', { name: entity.name }));
           abortRef.current = null;
         },
@@ -284,6 +347,82 @@ export default function EntityDetailPage({
       abortRef.current.abort();
     }
   }, []);
+
+  const handleBackfillDialogueMemories = useCallback(async () => {
+    if (!entity) return;
+    if (entity.continuousMemoryEnabled === false) {
+      toast.message(t('entity.memory.backfillDisabled'));
+      return;
+    }
+    const llm = await getActiveLLMOptions();
+    if (!llm) {
+      toast.error(t('entity.memory.backfillNeedLlm'));
+      return;
+    }
+    setBackfilling(true);
+    setBackfillProgress(null);
+    try {
+      const r = await backfillDialogueMemoriesFromHistory({
+        entityId: entity.id,
+        llmOptions: llm,
+        onProgress: (p) => setBackfillProgress({ current: p.current, total: p.total }),
+      });
+      if (r.skipped) {
+        toast.message(t('entity.memory.backfillDisabled'));
+        return;
+      }
+      if (r.totalMessageRows === 0) {
+        toast.message(t('entity.memory.backfillNoChat'));
+        return;
+      }
+      toast.success(
+        t('entity.memory.backfillDone', {
+          windows: String(r.windowsDone),
+          messages: String(r.totalMessageRows),
+        }),
+      );
+    } catch (e) {
+      console.error(e);
+      toast.error(t('entity.memory.backfillFail'));
+    } finally {
+      setBackfilling(false);
+      setBackfillProgress(null);
+    }
+  }, [entity, getActiveLLMOptions, t]);
+
+  const runRebuildRelationship = useCallback(async () => {
+    if (!entity) return;
+    const llmOpts = await getActiveLLMOptions();
+    if (!llmOpts) {
+      toast.error(t('settings.noModels'));
+      return;
+    }
+    setRebuildingRelationship(true);
+    setShowRebuildRelationshipConfirm(false);
+    try {
+      const digest = await buildMemoryDigestForRelationshipRebuild(entity.id);
+      await seedRelationshipSnapshotFromFacts({
+        entityId: entity.id,
+        questionnaire: entity.questionnaire,
+        soulDocs: entity.soulDocs,
+        llmOptions: {
+          apiKey: llmOpts.apiKey,
+          baseURL: llmOpts.baseURL,
+          model: llmOpts.model,
+          temperature: llmOpts.temperature,
+          apiType: llmOpts.apiType,
+        },
+        mode: 'rebuild',
+        memoryDigest: digest || undefined,
+      });
+      toast.success(t('entity.relationship.rebuildDone'));
+    } catch (e) {
+      console.error(e);
+      toast.error(t('entity.relationship.rebuildFail'));
+    } finally {
+      setRebuildingRelationship(false);
+    }
+  }, [entity, getActiveLLMOptions, t]);
 
   const handleDelete = async () => {
     if (!entity) return;
@@ -582,6 +721,14 @@ export default function EntityDetailPage({
                   <Button variant="outline" size="sm" onClick={() => setShowExportDialog(true)}>
                     <Download className="h-3.5 w-3.5 mr-1" /> {t('export.individual')}
                   </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    disabled={rebuildingRelationship || extracting}
+                    onClick={() => setShowRebuildRelationshipConfirm(true)}
+                  >
+                    <RefreshCw className="h-3.5 w-3.5 mr-1" /> {t('entity.relationship.rebuildCta')}
+                  </Button>
                 </>
               )}
               <Button variant="ghost" size="sm" onClick={() => setShowArchive(false)}>
@@ -639,6 +786,98 @@ export default function EntityDetailPage({
             </Button>
           </div>
 
+          {isReady && (
+            <Card className="border-border/50 bg-gradient-to-b from-amber-50/40 to-transparent dark:from-amber-950/20 dark:to-transparent">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-base font-[family-name:var(--font-display)]">
+                  {t('entity.memory.howItWorksTitle')}
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4 text-sm text-muted-foreground leading-relaxed">
+                <div className="flex items-start justify-between gap-3 rounded-md border border-border/50 bg-background/50 px-3 py-2.5">
+                  <div className="space-y-0.5 min-w-0">
+                    <Label htmlFor="continuous-memory-switch" className="text-foreground text-sm font-medium">
+                      {t('entity.memory.continuousLabel')}
+                    </Label>
+                    <p className="text-xs leading-relaxed">{t('entity.memory.continuousHint')}</p>
+                  </div>
+                  <Switch
+                    id="continuous-memory-switch"
+                    checked={entity.continuousMemoryEnabled !== false}
+                    disabled={backfilling}
+                    onCheckedChange={(on) => {
+                      void updateEntity(entity.id, { continuousMemoryEnabled: on });
+                      setEntity((prev) =>
+                        prev ? { ...prev, continuousMemoryEnabled: on } : null,
+                      );
+                    }}
+                    aria-label={t('entity.memory.continuousLabel')}
+                  />
+                </div>
+                <p>{t('entity.memory.howItWorksP1')}</p>
+                <p>{t('entity.memory.howItWorksP2')}</p>
+                <p className="text-xs opacity-90">{t('entity.memory.howItWorksP3')}</p>
+              </CardContent>
+            </Card>
+          )}
+
+          {isReady && (
+            <Card className="border-border/50 bg-card/80">
+              <CardContent className="pt-4 pb-4 space-y-3">
+                <div className="space-y-1">
+                  <p className="text-sm font-medium font-[family-name:var(--font-display)]">
+                    {t('entity.memory.backfillTitle')}
+                  </p>
+                  <p className="text-xs text-muted-foreground leading-relaxed">
+                    {t('entity.memory.backfillHint')}
+                  </p>
+                </div>
+                {backfilling && backfillProgress && backfillProgress.total > 0 ? (
+                  <p className="text-xs text-muted-foreground">
+                    {t('entity.memory.backfillProgress', {
+                      c: String(backfillProgress.current),
+                      t: String(backfillProgress.total),
+                    })}
+                  </p>
+                ) : null}
+                <Button
+                  type="button"
+                  variant="secondary"
+                  size="sm"
+                  className="shadow-[var(--shadow-warm-sm)]"
+                  disabled={backfilling || entity.continuousMemoryEnabled === false}
+                  onClick={() => void handleBackfillDialogueMemories()}
+                >
+                  {backfilling ? (
+                    <Flame className="h-3.5 w-3.5 mr-1.5 animate-pulse" />
+                  ) : (
+                    <History className="h-3.5 w-3.5 mr-1.5" />
+                  )}
+                  {t('entity.memory.backfillCta')}
+                </Button>
+                <div className="pt-2 border-t border-border/40 space-y-2">
+                  <p className="text-xs text-muted-foreground leading-relaxed">
+                    {t('entity.relationship.rebuildHint')}
+                  </p>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    disabled={rebuildingRelationship || extracting || backfilling}
+                    onClick={() => setShowRebuildRelationshipConfirm(true)}
+                  >
+                    {rebuildingRelationship ? (
+                      <RefreshCw className="h-3.5 w-3.5 mr-1.5 animate-spin" />
+                    ) : (
+                      <RefreshCw className="h-3.5 w-3.5 mr-1.5" />
+                    )}
+                    {t('entity.relationship.rebuildCta')}
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
           {/* Chat Records Section */}
           <div className="space-y-2">
             <h3 className="text-sm font-medium font-[family-name:var(--font-display)]">
@@ -692,6 +931,21 @@ export default function EntityDetailPage({
           )}
         </div>
       )}
+
+      <AlertDialog open={showRebuildRelationshipConfirm} onOpenChange={setShowRebuildRelationshipConfirm}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{t('entity.relationship.rebuildConfirmTitle')}</AlertDialogTitle>
+            <AlertDialogDescription>{t('entity.relationship.rebuildConfirmDesc')}</AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>{t('entity.relationship.rebuildCancel')}</AlertDialogCancel>
+            <AlertDialogAction onClick={() => void runRebuildRelationship()}>
+              {t('entity.relationship.rebuildConfirm')}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
       {/* Dialogs */}
       <DeleteEntityDialog

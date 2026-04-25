@@ -12,6 +12,10 @@ import type {
   QuestionnaireStep4,
 } from '@/types';
 import { useEntityStore } from '@/lib/store/entity-store';
+import {
+  hasRecoverableNewEntityDraft,
+  type NewEntityDraftPayload,
+} from '@/lib/store/entity-schemas';
 import { useSearchConfigStore } from '@/lib/store/search-config-store';
 import { useProviderStore } from '@/lib/store/provider-store';
 import { toast } from 'sonner';
@@ -33,6 +37,17 @@ import { AvatarUpload } from '@/components/entity/avatar-upload';
 import { useT } from '@/lib/i18n';
 import Link from 'next/link';
 import { autoFillQuestionnaire } from '@/lib/search/questionnaire-autofill-service';
+import type { DimensionalBreakResult } from '@/lib/search/search-types';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 
 const EMPTY_STEP1: QuestionnaireStep1 = {
   name: '',
@@ -76,8 +91,11 @@ export default function NewEntityPage() {
   const [textMaterials, setTextMaterials] = useState<TextMaterial[]>([]);
   const [chatMaterials, setChatMaterials] = useState<TextMaterial[]>([]);
   const [webSearchMaterials, setWebSearchMaterials] = useState<TextMaterial[]>([]);
+  const [dimensionalBreakResult, setDimensionalBreakResult] = useState<DimensionalBreakResult | null>(null);
   const [showEthicsModal, setShowEthicsModal] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [emptyMaterialsDialogOpen, setEmptyMaterialsDialogOpen] = useState(false);
+  const [draftHintVisible, setDraftHintVisible] = useState(false);
 
   // Fictional Summon Gate state
   const [showSummonGate, setShowSummonGate] = useState(false);
@@ -106,30 +124,59 @@ export default function NewEntityPage() {
     { value: 'custom', label: t('new.type.custom'), icon: <BookOpen className="h-5 w-5" />, desc: t('new.type.custom.desc') },
   ];
 
-  // Debounced auto-save
+  // Debounced auto-save (questionnaire + fictional dimensional break + materials + avatar)
   const saveTimeout = useRef<ReturnType<typeof setTimeout>>(undefined);
   const autoSave = useCallback(() => {
     if (!entityType) return;
     clearTimeout(saveTimeout.current);
     saveTimeout.current = setTimeout(() => {
-      saveDraft(entityType, {
+      const payload: NewEntityDraftPayload = {
         entityType,
         step1,
         step2,
         step3,
         step4,
-      });
+      };
+      if (entityType === 'fictional') {
+        if (dimensionalBreakResult) payload.dimensionalBreakResult = dimensionalBreakResult;
+        if (webSearchMaterials.length > 0) payload.webSearchMaterials = webSearchMaterials;
+        if (textMaterials.length > 0) payload.textMaterials = textMaterials;
+        if (chatMaterials.length > 0) payload.chatMaterials = chatMaterials;
+        if (avatarUrl) payload.avatarUrl = avatarUrl;
+      } else {
+        if (textMaterials.length > 0) payload.textMaterials = textMaterials;
+        if (chatMaterials.length > 0) payload.chatMaterials = chatMaterials;
+        if (avatarUrl) payload.avatarUrl = avatarUrl;
+      }
+      saveDraft(entityType, payload);
     }, 1000);
-  }, [entityType, step1, step2, step3, step4, saveDraft]);
+  }, [
+    entityType,
+    step1,
+    step2,
+    step3,
+    step4,
+    dimensionalBreakResult,
+    webSearchMaterials,
+    textMaterials,
+    chatMaterials,
+    avatarUrl,
+    saveDraft,
+  ]);
 
   useEffect(() => {
     autoSave();
     return () => clearTimeout(saveTimeout.current);
   }, [autoSave]);
 
-  // Load draft when entity type is selected
+  useEffect(() => {
+    if (!entityType) setDraftHintVisible(false);
+  }, [entityType]);
+
+  // Load draft when entity type is selected + single-draft hint
   useEffect(() => {
     if (!entityType) return;
+    const hintKey = `su_new_entity_draft_hint_${entityType}`;
     loadDraft(entityType).then((draft) => {
       if (draft) {
         if (draft.step1) setStep1(draft.step1);
@@ -137,8 +184,47 @@ export default function NewEntityPage() {
         if (draft.step3) setStep3(draft.step3);
         if (draft.step4) setStep4(draft.step4);
       }
+      if (entityType === 'fictional') {
+        if (draft) {
+          setDimensionalBreakResult(draft.dimensionalBreakResult ?? null);
+          setWebSearchMaterials(draft.webSearchMaterials ?? []);
+          setTextMaterials(draft.textMaterials ?? []);
+          setChatMaterials(draft.chatMaterials ?? []);
+          if (draft.avatarUrl) setAvatarUrl(draft.avatarUrl);
+        } else {
+          setDimensionalBreakResult(null);
+          setWebSearchMaterials([]);
+          setTextMaterials([]);
+          setChatMaterials([]);
+          setAvatarUrl(undefined);
+        }
+      } else {
+        setDimensionalBreakResult(null);
+        setWebSearchMaterials([]);
+        if (draft) {
+          setTextMaterials(draft.textMaterials ?? []);
+          setChatMaterials(draft.chatMaterials ?? []);
+          if (draft.avatarUrl) setAvatarUrl(draft.avatarUrl);
+        } else {
+          setTextMaterials([]);
+          setChatMaterials([]);
+          setAvatarUrl(undefined);
+        }
+      }
+      const showHint =
+        typeof window !== 'undefined' &&
+        hasRecoverableNewEntityDraft(draft) &&
+        !sessionStorage.getItem(hintKey);
+      setDraftHintVisible(showHint);
     });
   }, [entityType, loadDraft]);
+
+  const dismissDraftHint = useCallback(() => {
+    if (entityType && typeof window !== 'undefined') {
+      sessionStorage.setItem(`su_new_entity_draft_hint_${entityType}`, '1');
+    }
+    setDraftHintVisible(false);
+  }, [entityType]);
 
   const getStepValidationIssues = useCallback((): string[] => {
     const issues: string[] = [];
@@ -230,26 +316,30 @@ export default function NewEntityPage() {
   // proper `EntityType` type without assertions.
   const doSubmit = async (resolvedEntityType: EntityType) => {
     setIsSubmitting(true);
-    const questionnaire: QuestionnaireData = {
-      entityType: resolvedEntityType,
-      step1,
-      step2,
-      step3,
-      step4,
-    };
+    try {
+      const questionnaire: QuestionnaireData = {
+        entityType: resolvedEntityType,
+        step1,
+        step2,
+        step3,
+        step4,
+      };
 
-    const entity = await createEntity(questionnaire);
-    const { updateEntity } = useEntityStore.getState();
-    const updates: Partial<typeof entity> = {};
-    if (avatarUrl) updates.avatarUrl = avatarUrl;
-    if (textMaterials.length > 0) updates.textMaterials = textMaterials;
-    if (chatMaterials.length > 0) updates.chatMaterials = chatMaterials;
-    if (webSearchMaterials.length > 0) updates.webSearchMaterials = webSearchMaterials;
-    if (Object.keys(updates).length > 0) {
-      await updateEntity(entity.id, updates);
+      const entity = await createEntity(questionnaire);
+      const { updateEntity } = useEntityStore.getState();
+      const updates: Partial<typeof entity> = {};
+      if (avatarUrl) updates.avatarUrl = avatarUrl;
+      if (textMaterials.length > 0) updates.textMaterials = textMaterials;
+      if (chatMaterials.length > 0) updates.chatMaterials = chatMaterials;
+      if (webSearchMaterials.length > 0) updates.webSearchMaterials = webSearchMaterials;
+      if (Object.keys(updates).length > 0) {
+        await updateEntity(entity.id, updates);
+      }
+      await clearDraft(resolvedEntityType);
+      router.push(`/entities/${entity.id}`);
+    } finally {
+      setIsSubmitting(false);
     }
-    await clearDraft(resolvedEntityType);
-    router.push(`/entities/${entity.id}`);
   };
 
   const handleSubmit = async () => {
@@ -260,6 +350,10 @@ export default function NewEntityPage() {
         showValidationToast(issues);
         return;
       }
+    }
+    if (currentStep === MATERIALS_STEP_INDEX && textMaterials.length === 0) {
+      setEmptyMaterialsDialogOpen(true);
+      return;
     }
     await doSubmit(entityType);
   };
@@ -469,6 +563,29 @@ export default function NewEntityPage() {
       {/* Stepper */}
       <Stepper currentStep={currentStep} steps={steps} />
 
+      {draftHintVisible && (
+        <div
+          role="status"
+          className="rounded-xl border border-border bg-[hsl(var(--su-surface-2))] p-4 text-sm shadow-[var(--shadow-warm-sm)]"
+        >
+          <p className="font-medium font-[family-name:var(--font-display)] text-foreground">
+            {t('new.draft.singleHint')}
+          </p>
+          <p className="mt-2 text-muted-foreground leading-relaxed">
+            {t('new.draft.singleHintDetail')}
+          </p>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            className="mt-3"
+            onClick={dismissDraftHint}
+          >
+            {t('new.draft.dismiss')}
+          </Button>
+        </div>
+      )}
+
       {/* Step content */}
       <Card className="border-border bg-card shadow-[var(--shadow-warm-sm)]">
         <CardContent className="pt-6">
@@ -490,6 +607,8 @@ export default function NewEntityPage() {
               workName={step1.fictionalWorkName || ''}
               webSearchMaterials={webSearchMaterials}
               onMaterialsChange={setWebSearchMaterials}
+              dimensionalBreakResult={dimensionalBreakResult}
+              onDimensionalBreakResultChange={setDimensionalBreakResult}
             />
           )}
           {currentStep === STEP4_INDEX && !isFictional && (
@@ -521,6 +640,32 @@ export default function NewEntityPage() {
                   {t('new.materials.extraHint')}
                 </p>
               </div>
+              {isFictional &&
+                webSearchMaterials.some((m) => m.id.startsWith('web-search-')) && (
+                  <div className="space-y-2 rounded-lg border border-border bg-[hsl(var(--su-surface-2))]/60 p-4">
+                    <h4 className="text-sm font-medium font-[family-name:var(--font-display)]">
+                      {t('new.materials.dimensionalSectionTitle')}
+                    </h4>
+                    <p className="text-xs text-muted-foreground leading-relaxed">
+                      {t('new.materials.dimensionalSectionSubtitle')}
+                    </p>
+                    <div className="space-y-3">
+                      {webSearchMaterials
+                        .filter((m) => m.id.startsWith('web-search-'))
+                        .map((m) => (
+                          <div
+                            key={m.id}
+                            className="rounded-md border border-border/80 bg-card/50 p-3 text-xs"
+                          >
+                            <p className="font-medium text-foreground truncate">{m.filename}</p>
+                            <pre className="mt-2 max-h-48 overflow-y-auto whitespace-pre-wrap break-words text-muted-foreground leading-relaxed">
+                              {m.content}
+                            </pre>
+                          </div>
+                        ))}
+                    </div>
+                  </div>
+                )}
               <DocumentUpload
                 materials={textMaterials}
                 onMaterialsChange={setTextMaterials}
@@ -612,6 +757,27 @@ export default function NewEntityPage() {
         onConfirm={handleEthicsConfirm}
         onCancel={() => setShowEthicsModal(false)}
       />
+
+      <AlertDialog open={emptyMaterialsDialogOpen} onOpenChange={setEmptyMaterialsDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{t('new.materials.emptyConfirmTitle')}</AlertDialogTitle>
+            <AlertDialogDescription>{t('new.materials.emptyConfirmDescription')}</AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>{t('new.materials.emptyConfirmNo')}</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                if (entityType) {
+                  void doSubmit(entityType);
+                }
+              }}
+            >
+              {t('new.materials.emptyConfirmYes')}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

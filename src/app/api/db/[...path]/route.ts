@@ -78,6 +78,7 @@ import {
   ProviderModelUpsertBody,
   EntityUpsertBody,
   SessionUpsertBody,
+  SessionStateUpsertBody,
   MessageInsertBody,
   MessageBatchBody,
   UserProfileUpsertBody,
@@ -85,8 +86,12 @@ import {
   RelationshipSnapshotUpsertBody,
   MemoryEventsBatchBody,
   MemoryFactsBatchBody,
+  MemoryFactUpsertMergeBody,
   MemorySummariesBatchBody,
   OpenLoopsBatchBody,
+  MemoryEmbeddingUpsertBody,
+  MemoryEmbeddingsListBody,
+  MemoryEmbeddingsDeleteForEntityBody,
   ConfigSetBody,
   RestoreEntityBody,
   BackupDeriveLegacyDekBody,
@@ -1566,6 +1571,18 @@ const configDeleteHandler: DbHandler = async ({ db, body }) => {
 
 // --- Memory Events / Facts / Summaries / Relationship / Open Loops ---
 
+const sessionStateGetHandler: DbHandler = async ({ db, body }) => {
+  const sessionId = readString(body, 'sessionId') ?? '';
+  const guard = requireField(sessionId, 'sessionId');
+  if (guard) return guard;
+  return NextResponse.json(await storage.getSessionState(db, sessionId));
+};
+
+const sessionStateUpsertHandler: DbHandler = makeUpsertHandler(
+  SessionStateUpsertBody,
+  (db, data) => storage.upsertSessionState(db, data),
+);
+
 const memoryEventsListHandler: DbHandler = async ({ db, body }) =>
   NextResponse.json(
     await storage.getMemoryEventsForEntity(db, readString(body, 'entityId') ?? ''),
@@ -1587,6 +1604,15 @@ const memoryFactsInsertBatchHandler: DbHandler = makeBatchHandler(
   'facts',
   storage.insertMemoryFacts,
 );
+
+const memoryFactsUpsertMergeHandler: DbHandler = async ({ db, body, route }) => {
+  const parsed = MemoryFactUpsertMergeBody.safeParse(body);
+  if (!parsed.success) return zodErrorResponse(parsed.error, route);
+  const id = await storage.upsertMemoryFactByMergeKey(db, parsed.data.fact as Parameters<
+    typeof storage.upsertMemoryFactByMergeKey
+  >[1]);
+  return NextResponse.json({ ok: true, id });
+};
 
 const memorySummariesListHandler: DbHandler = async ({ db, body }) =>
   NextResponse.json(
@@ -1619,6 +1645,41 @@ const memoryLoopsInsertBatchHandler: DbHandler = makeBatchHandler(
   'loops',
   storage.insertOpenLoops,
 );
+
+const memoryEmbeddingUpsertHandler: DbHandler = async ({ db, body, route }) => {
+  const parsed = MemoryEmbeddingUpsertBody.safeParse(body);
+  if (!parsed.success) return zodErrorResponse(parsed.error, route);
+  const d = parsed.data;
+  await storage.upsertMemoryEmbedding(db, {
+    memoryId: d.memoryId,
+    memoryKind: d.memoryKind,
+    modelName: d.modelName,
+    embedding: d.embedding,
+  });
+  return NextResponse.json({ ok: true });
+};
+
+const memoryEmbeddingsListHandler: DbHandler = async ({ db, body, route }) => {
+  const parsed = MemoryEmbeddingsListBody.safeParse(body);
+  if (!parsed.success) return zodErrorResponse(parsed.error, route);
+  const rows = await storage.listMemoryEmbeddingsForEntity(
+    db,
+    parsed.data.entityId,
+    parsed.data.modelName,
+  );
+  return NextResponse.json(rows);
+};
+
+const memoryEmbeddingsDeleteForEntityHandler: DbHandler = async ({ db, body, route }) => {
+  const parsed = MemoryEmbeddingsDeleteForEntityBody.safeParse(body);
+  if (!parsed.success) return zodErrorResponse(parsed.error, route);
+  await storage.deleteMemoryEmbeddingsForEntity(
+    db,
+    parsed.data.entityId,
+    parsed.data.modelName ?? null,
+  );
+  return NextResponse.json({ ok: true });
+};
 
 const memoryRestoreEntityAtomicHandler: DbHandler = async ({ db, body, route }) => {
   const parsed = RestoreEntityBody.safeParse(body);
@@ -1687,6 +1748,8 @@ const DB_HANDLERS: Map<string, DbHandler> = new Map([
   ['chat/session/get', chatSessionGetHandler],
   ['chat/session/upsert', chatSessionUpsertHandler],
   ['chat/session/delete', chatSessionDeleteHandler],
+  ['chat/session-state/get', sessionStateGetHandler],
+  ['chat/session-state/upsert', sessionStateUpsertHandler],
   // chat messages
   ['chat/messages', chatMessagesHandler],
   ['chat/messages/by-entity', chatMessagesByEntityHandler],
@@ -1708,12 +1771,16 @@ const DB_HANDLERS: Map<string, DbHandler> = new Map([
   ['memory/events/insert-batch', memoryEventsInsertBatchHandler],
   ['memory/facts/list', memoryFactsListHandler],
   ['memory/facts/insert-batch', memoryFactsInsertBatchHandler],
+  ['memory/facts/upsert-merge', memoryFactsUpsertMergeHandler],
   ['memory/summaries/list', memorySummariesListHandler],
   ['memory/summaries/insert-batch', memorySummariesInsertBatchHandler],
   ['memory/relationship/get', memoryRelationshipGetHandler],
   ['memory/relationship/upsert', memoryRelationshipUpsertHandler],
   ['memory/loops/list', memoryLoopsListHandler],
   ['memory/loops/insert-batch', memoryLoopsInsertBatchHandler],
+  ['memory/embeddings/upsert', memoryEmbeddingUpsertHandler],
+  ['memory/embeddings/list-for-entity', memoryEmbeddingsListHandler],
+  ['memory/embeddings/delete-for-entity', memoryEmbeddingsDeleteForEntityHandler],
   ['memory/restore-entity-atomic', memoryRestoreEntityAtomicHandler],
 ]);
 

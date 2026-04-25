@@ -100,7 +100,10 @@ export function RestoreEntityDialog({ open, onOpenChange, onRestoreComplete }: R
       // SU-ITER-091-batch1 · code-N-5 — entity backup flow; scope
       // validated upstream via `validateBackup`.
       await restoreEntityPayload(payload as EntityBackupPayload, strategy);
-      toast.success(t('backup.restore.success'));
+      toast.success(t('backup.restore.success'), {
+        description: t('backup.restore.suggestRelationshipRebuild'),
+        duration: 10_000,
+      });
       onOpenChange(false);
       reset();
       onRestoreComplete();

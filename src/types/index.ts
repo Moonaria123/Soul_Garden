@@ -228,6 +228,11 @@ export interface ConsciousnessEntity {
   errorMessage?: string;
   createdAt: string;
   updatedAt: string;
+  /**
+   * When false, new chat is not extracted to dialogue memory and that entity is
+   * skipped in global vector rebuild. Default true (omitted in older data).
+   */
+  continuousMemoryEnabled?: boolean;
 }
 
 // --- Soul Documents (DEV §5, V1.0 = 5 core only) ---
@@ -380,6 +385,10 @@ export const CHAT_CONSTANTS = {
   SUMMARY_TRIGGER_COUNT: 20,
   /** Keep this many recent messages in full context */
   RECENT_MESSAGES_WINDOW: 20,
+  /** SU-044 — run structured memory extraction every N new messages (8–12 band) */
+  MEMORY_EXTRACT_TRIGGER_COUNT: 10,
+  /** SU-044 Phase 2 — compress this many new dialogue events into one topic-batch summary */
+  MEMORY_SUMMARY_COMPRESS_BATCH: 12,
 } as const;
 
 // --- User Profile (SU-ITER-043: Global "Me" page) ---
