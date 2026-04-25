@@ -231,7 +231,9 @@ If you use **OpenClaw**, you can choose to **Meet Them on OpenClaw**: the app pa
 
 ## A closer look
 
-We are not listing cold specs — only what **you might feel**:
+We are not listing cold specs — only what **you might feel**.
+
+The table below holds both the **small things your hands notice** and the **lamps already lit in the garden** — main path, materials, exports, memory, relationship, network, and the quiet engineering that holds the door. **What is already here today** is gathered in this one place; **what is still only a seed** lives in [Roadmap](#user-content-toc-roadmap) below.
 
 
 | Capability | What you might feel |
@@ -247,6 +249,10 @@ We are not listing cold specs — only what **you might feel**:
 | **Search, whitelists, wall-break → drafts** | In chat, where the stack allows, **model-native** / **Brave** / **Firecrawl** and **search URL whitelists**. For **Dream Companions** who **break the wall**, the **portrait, pull-quotes, and “world-side” bits** can rest in a **draft** first. Steps that touch the open web show **read-only, legible** “world” text, so you always know which lines are **shared canon** and which you are about to **write in private** together. |
 | **Vault, backup, OpenClaw** | Pack, change machines, or let them live on in **another** familiar tool — **export the vault**, **passworded backup/restore**, or **OpenClaw**-style hand-off, in **plain, human** steps. |
 | **Warm paper & night** | **Warm** paper surfaces, **day / night** reading, a little **illustration** on the sign-in page — a letter in a **drawer**, not a cold control room. |
+| **Main path: door, daily talk, and light** | **Local** accounts, **strong** secrets, idle and **“too many tries”** pauses, **1:1 streaming** and **rolling summaries**, **English & 中文**, **warm paper** — the **meal you eat most days** when you walk in; the **porch light** behind the rows above. |
+| **Long letters from many apps, folded in** | Beyond the rows above: **`.md` / `.txt`** and **language sniffing**; **import & preview** for common **IM exports** (**WeChat, QQ, Feishu, DingTalk**, as **the app supports** at the time) into materials and the vault; **new writing after the first awakening** can still be **woven in** — letters can **stack**, you do not have to burn the house down to add one. |
+| **Packs to carry, places to continue** | **ZIP**, single **Markdown**, and a **step-by-step OpenClaw pack** with optional **conversation memory** (check the export flow) — **leave with a bundle**, **pick up the story elsewhere**, with **plain-language** steps. |
+| **Engineering you should barely feel** | We also **tend the joinery** you should not have to see: **CSP-style** headers, **permissions policy**, **automated** unit tests and **E2E** — not for bragging, only so you meet **fewer** inexplicable refusals and blank screens. |
 
 
 ---
@@ -295,20 +301,8 @@ docker run --rm -p 3002:3002 -e SOUL_UPLOAD_DATA_DIR=/data -v soul-upload-data:/
 
 ## Roadmap
 
-> How Missing You may grow — no rush, only a slow walk closer.
->
-> The points below are **directional** — not a fixed release schedule.
-
-### Already here today
-
-- **Core experience:** local accounts, strong password hashing, idle timeout & lockout, LLM provider setup, five-document soul extraction, 1:1 chat with streaming, rolling summaries, **English & 中文** UI, warm-paper design.
-- **Soul memory & relationship warmth:** per-entity **continuous memory** you can turn on or off; **vector memory & search** with **local or trusted cloud** embedding models (keys stay on your side); **light post-chat summaries and analysis** and **memory you can stitch back** into the living thread; **first and evolving relationship scores**; **rebuild relationship** in the Inner Archive; **relationship tiers** from **“Stranger”** up to bands like **“Deeply close”** (the **top tier’s label** shifts with **pairing & gender** so it still sounds like *you two*).
-- **Materials & stories:** `.md` / `.txt` import, language detection, **Memory Sanctuary**, and **weaving new material into an existing soul** after the first awakening; **import & preview** for common **IM exports** (**WeChat, QQ, Feishu, DingTalk**, as the app supports today) into materials and the vault.
-- **Light from the network:** optional model-native / **Brave** / **Firecrawl** tools in chat (keys **encrypted locally**, **proxied**, **URL allowlists**); on the Dream Companion path, **Break the Dimensional Wall** results can **land in a draft** before you seal the five documents.
-- **Exports:** ZIP / Markdown, plus a **guided pack for OpenClaw** (optional **conversation memory** where the flow allows).
-- **Safety & quality:** security-minded response headers (including CSP), permissions policy, automated unit & E2E tests.
-
-### What we’re exploring next
+> **What is already in the garden** — see **[A closer look](#user-content-toc-a-closer-look)** above, one table.  
+> **What follows** is only what we are **still sowing** — no rush, no fixed ship date, just a **possible further shore**.
 
 | Direction               | What might come |
 | ----------------------- | ----------------- |
