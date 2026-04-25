@@ -98,7 +98,7 @@ Welcoming a new soul into the garden is not ticking a box — it is a **summonin
 
 ### Dream Companion: when a name from fiction has an echo here
 
-**Dream Companion** is for someone who **lives in a work** — a novel, show, game, or film. You do not have to arrive with a perfect wiki in your head. At the gate you can try **summon by renown** (where the model allows) with just a name and a world, or choose **I’ll summon them myself** and walk the form **step by step**, line by line.  
+**Dream Companion** is for someone who **lives in a work** — a novel, show, game, or film. You do not have to arrive with a perfect wiki in your head. At the gate you can try **summon by their renowned name** (where the soul-summoner allows) with just a name and a world, or choose **I’ll summon them myself** and walk the form **step by step**, line by line.  
 
 We stay with you through **knowing them → voice and personality → emotions and boundaries → how you relate**; then comes the path only Dream Companions take — **Break the Dimensional Wall**. When your LLM and web tools are configured, you can gather a few **public references** — world, lines, relationships — guided by the **search tools and URL allowlist** you trust in **Settings** (**you can skip this entirely**). Then **more materials** and text, all **stored only on your device**, to thicken the soil for the **five-document extraction** to come.  
 
