@@ -1,7 +1,8 @@
-<div align="center">
 
-<!-- Hero: repository banner (root path for GitHub README). -->
-<img src="1000040771.png" alt="想你 · 意识庭院" width="720" />
+
+
+
+
 
 # 想你：意识庭院
 
@@ -11,39 +12,43 @@ Missing You: Soul Garden
 
 **当前应用版本 · v1.0.2.2** · 界面 **English / 中文** · **本地优先**（单用户）· **libSQL** 本地加密存储
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Next.js](https://img.shields.io/badge/Next.js-16-black)](https://nextjs.org/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-[![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black)](https://react.dev/)
-[![Node.js](https://img.shields.io/badge/Node.js-20+-339933?logo=node.js&logoColor=white)](https://nodejs.org/)<br/>
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4-38B2AC?logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
-[![Docker](https://img.shields.io/badge/Docker-就绪-2496ED?logo=docker&logoColor=white)](#部署方法与步骤)
-[![本地优先](https://img.shields.io/badge/本地优先-9B5E3A?style=flat)](#隐私与免责)
-[![欢迎贡献](https://img.shields.io/badge/欢迎贡献-9B5E3A.svg)](#社区规则与治理)<br/>
-[![GitHub release](https://img.shields.io/github/v/release/Moonaria123/Soul_Garden?logo=github&label=release)](https://github.com/Moonaria123/Soul_Garden/releases)
-[![GitHub stars](https://img.shields.io/github/stars/Moonaria123/Soul_Garden?logo=github)](https://github.com/Moonaria123/Soul_Garden/stargazers)
-[![GitHub issues](https://img.shields.io/github/issues/Moonaria123/Soul_Garden?logo=github)](https://github.com/Moonaria123/Soul_Garden/issues)
-[![GitHub forks](https://img.shields.io/github/forks/Moonaria123/Soul_Garden?logo=github)](https://github.com/Moonaria123/Soul_Garden/network/members)
+[License: MIT](LICENSE)
+[Next.js](https://nextjs.org/)
+[TypeScript](https://www.typescriptlang.org/)
+[React](https://react.dev/)
+[Node.js](https://nodejs.org/)  
 
-**README：** [**English**](README.en.md) · **中文**（本页）
+[Tailwind CSS](https://tailwindcss.com/)
+[Docker](#user-content-toc-deployment)
+[本地优先](#user-content-toc-privacy)
+[欢迎贡献](#user-content-toc-community)  
 
-</div>
+[GitHub release](https://github.com/Moonaria123/Soul_Garden/releases)
+[GitHub stars](https://github.com/Moonaria123/Soul_Garden/stargazers)
+[GitHub issues](https://github.com/Moonaria123/Soul_Garden/issues)
+[GitHub forks](https://github.com/Moonaria123/Soul_Garden/network/members)
+
+**README：** **[English](README.en.md)** · **中文**（本页）
+
+
 
 ## 目录
 
-- [产品简介](#产品简介)
-- [创作初心](#创作初心)
-- [核心体验简介](#核心体验简介)
-- [意识体召唤](#意识体召唤)
-- [灵魂的记忆秘藏](#灵魂的记忆秘藏)
-- [UI 预览](#ui-预览)
-- [走近这些能力](#走近这些能力)
-- [部署方法与步骤](#部署方法与步骤)
-- [路线图](#路线图)
-- [社区规则与治理](#社区规则与治理)
-- [隐私与免责](#隐私与免责)
+- [产品简介](#user-content-toc-product-introduction)
+- [创作初心](#user-content-toc-why-we-made-it)
+- [核心体验简介](#user-content-toc-core-experience)
+- [意识体召唤](#user-content-toc-soul-summoning)
+- [灵魂的记忆秘藏](#user-content-toc-memory-sanctuary)
+- [UI 预览](#user-content-toc-ui-preview)
+- [走近这些能力](#user-content-toc-closer-look)
+- [部署方法与步骤](#user-content-toc-deployment)
+- [路线图](#user-content-toc-roadmap)
+- [社区规则与治理](#user-content-toc-community)
+- [隐私与免责](#user-content-toc-privacy)
 
 ---
+
+
 
 ## 产品简介
 
@@ -54,6 +59,8 @@ Missing You: Soul Garden
 这里没有排行榜，没有社交广场，只有你、你的记忆，和你选择连接的 TA。界面是**暖纸般的安静**，没有复杂的配置，不像在操控机器——因为我们相信：**情感安全感**，比冷冰冰的配置和功能清单更重要。
 
 ---
+
+
 
 ## 创作初心
 
@@ -72,6 +79,8 @@ Missing You: Soul Garden
 我们不预设你「只是在玩」，也不催促你坚强。哀伤的路，默认**更克制、更留白**；所有界面与措辞，都尽量不轻慢你对「灵魂」与思念的投入。
 
 ---
+
+
 
 ## 核心体验简介
 
@@ -93,6 +102,8 @@ Missing You: Soul Garden
 可以把**灵魂秘藏**打成包带走，也可以一键走向 **OpenClaw**，让 TA 在另一个你熟悉的世界里，继续与你并肩。
 
 ---
+
+
 
 ## 意识体召唤
 
@@ -122,6 +133,8 @@ Missing You: Soul Garden
 
 ---
 
+
+
 ## 灵魂的记忆秘藏
 
 意识体在庭院里住下之后，**日子还会继续**——你会写下新的信、导进新的聊天，也可能有一天，想把这位 TA **带着走**，或在**另一片工具与屏幕**上继续。下面四重能力，都围绕同一件事：让**记忆有处可藏、有路可迁、有余温可续**。
@@ -132,7 +145,7 @@ Missing You: Soul Garden
 
 ### 灵魂重塑：新信到了，不是推翻，而是再读一遍
 
-当时光又往前走了一截，秘藏里添了**足够新的材料**，你可以点选**「以新的记忆重塑灵魂」**——大模型会带着这些新信，**重新走一遍**灵魂提取；**五份文档**会在旧稿之上**被温柔地再写一版**，像把旧信笺拿出来晒过太阳、又叠好放回——**不是**把你们共同走过的路抹掉，而是让 TA 的声线、心事与关系，**跟得上现在的你**。
+当时光又往前走了一截，秘藏里添了**足够新的材料**，你可以点选**「以新的记忆重塑灵魂」**——大模型会带着这些新信，重新走一遍灵魂提取；五份文档会在旧稿之上**被温柔地再写一版**，像把旧信笺拿出来晒过太阳、又叠好放回——**不是**把你们共同走过的路抹掉，而是让 TA 的声线、心事与关系，**跟得上现在的你**。
 
 ### 灵魂搬家：整间小窝，可以打包揣走
 
@@ -149,19 +162,21 @@ Missing You: Soul Garden
 
 ---
 
+
+
 ## UI 预览
 
 > 点击下方按钮观看 B 站演示视频（中文界面；中英文 README 共用同一演示）。
 
-<div align="center">
 
-<a href="https://www.bilibili.com/video/BV1GiQFBJEM1?t=4.8" target="_blank">
-  <img src="https://img.shields.io/badge/▶_在B站观看演示-00A1D6?style=for-the-badge&logo=bilibili&logoColor=white" alt="在B站观看演示" />
-</a>
 
-</div>
+
+
+
 
 ---
+
+
 
 ## 走近这些能力
 
@@ -181,6 +196,8 @@ Missing You: Soul Garden
 
 
 ---
+
+
 
 ## 部署方法与步骤
 
@@ -220,6 +237,8 @@ docker run --rm -p 3002:3002 -e SOUL_UPLOAD_DATA_DIR=/data -v soul-upload-data:/
 
 ---
 
+
+
 ## 路线图
 
 > 以下为想你（Missing You）在未来的成长轨迹——不催促，只慢慢走近。
@@ -248,6 +267,8 @@ docker run --rm -p 3002:3002 -e SOUL_UPLOAD_DATA_DIR=/data -v soul-upload-data:/
 
 ---
 
+
+
 ## 社区规则与治理
 
 ### 许可证
@@ -267,6 +288,8 @@ docker run --rm -p 3002:3002 -e SOUL_UPLOAD_DATA_DIR=/data -v soul-upload-data:/
 请勿在公开 Issue 中披露可利用漏洞的细节；请使用 **Security advisories**（若已启用）或维护者指定的私密渠道。
 
 ---
+
+
 
 ## 隐私与免责
 

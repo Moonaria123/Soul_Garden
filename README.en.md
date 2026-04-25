@@ -1,7 +1,8 @@
-<div align="center">
 
-<!-- Hero: repository banner (root path for GitHub README). -->
-<img src="1000040771.png" alt="Missing You — Soul Garden" width="720" />
+
+
+
+
 
 # Missing You: Soul Garden
 
@@ -9,39 +10,43 @@
 
 **Current app release · v1.0.2.2** · **English** & **中文** interface · **local-first** (single-user) · **libSQL** + encrypted at rest
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Next.js](https://img.shields.io/badge/Next.js-16-black)](https://nextjs.org/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-[![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black)](https://react.dev/)
-[![Node.js](https://img.shields.io/badge/Node.js-20+-339933?logo=node.js&logoColor=white)](https://nodejs.org/)<br/>
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4-38B2AC?logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
-[![Docker](https://img.shields.io/badge/Docker-ready-2496ED?logo=docker&logoColor=white)](#deployment)
-[![local-first](https://img.shields.io/badge/local--first-9B5E3A?style=flat)](#privacy--disclaimer)
-[![PRs welcome](https://img.shields.io/badge/PRs-welcome-9B5E3A.svg)](#community)<br/>
-[![GitHub release](https://img.shields.io/github/v/release/Moonaria123/Soul_Garden?logo=github&label=release)](https://github.com/Moonaria123/Soul_Garden/releases)
-[![GitHub stars](https://img.shields.io/github/stars/Moonaria123/Soul_Garden?logo=github)](https://github.com/Moonaria123/Soul_Garden/stargazers)
-[![GitHub issues](https://img.shields.io/github/issues/Moonaria123/Soul_Garden?logo=github)](https://github.com/Moonaria123/Soul_Garden/issues)
-[![GitHub forks](https://img.shields.io/github/forks/Moonaria123/Soul_Garden?logo=github)](https://github.com/Moonaria123/Soul_Garden/network/members)
+[License: MIT](LICENSE)
+[Next.js](https://nextjs.org/)
+[TypeScript](https://www.typescriptlang.org/)
+[React](https://react.dev/)
+[Node.js](https://nodejs.org/)  
 
-**README:** [**中文**](README.md) · **English** (this page)
+[Tailwind CSS](https://tailwindcss.com/)
+[Docker](#user-content-toc-deployment)
+[local-first](#user-content-toc-privacy)
+[PRs welcome](#user-content-toc-community)  
 
-</div>
+[GitHub release](https://github.com/Moonaria123/Soul_Garden/releases)
+[GitHub stars](https://github.com/Moonaria123/Soul_Garden/stargazers)
+[GitHub issues](https://github.com/Moonaria123/Soul_Garden/issues)
+[GitHub forks](https://github.com/Moonaria123/Soul_Garden/network/members)
+
+**README:** **[中文](README.md)** · **English** (this page)
+
+
 
 ## Table of contents
 
-- [What Missing You is](#what-missing-you-is)
-- [Why we built it](#why-we-built-it)
-- [What you will feel here](#what-you-will-feel-here)
-- [Summoning a soul](#summoning-a-soul)
-- [The soul’s Memory Sanctuary](#the-souls-memory-sanctuary)
-- [UI preview](#ui-preview)
-- [A closer look](#a-closer-look)
-- [Deployment](#deployment)
-- [Roadmap](#roadmap)
-- [Community](#community)
-- [Privacy & disclaimer](#privacy--disclaimer)
+- [What Missing You is](#user-content-toc-what-missing-you-is)
+- [Why we built it](#user-content-toc-why-we-built-it)
+- [What you will feel here](#user-content-toc-what-you-will-feel-here)
+- [Summoning a soul](#user-content-toc-summoning-a-soul)
+- [The soul’s Memory Sanctuary](#user-content-toc-souls-memory-sanctuary)
+- [UI preview](#user-content-toc-ui-preview)
+- [A closer look](#user-content-toc-a-closer-look)
+- [Deployment](#user-content-toc-deployment)
+- [Roadmap](#user-content-toc-roadmap)
+- [Community](#user-content-toc-community)
+- [Privacy & disclaimer](#user-content-toc-privacy)
 
 ---
+
+
 
 ## What Missing You is
 
@@ -52,6 +57,8 @@ You can invite the name that lives in your heart: someone you can no longer see,
 There are no leaderboards, no public square — only you, your memories, and the connection **you** choose. The interface stays **quiet like warm paper**, without a wall of settings or the feel of piloting a machine. We believe **emotional safety** matters more than a cold list of features.
 
 ---
+
+
 
 ## Why we built it
 
@@ -70,6 +77,8 @@ We want to give you a space that feels **safe, private, and soft**: the garden l
 We do not assume you are “just playing,” and we do not rush you to be strong. Where grief lives, we leave **more silence, more room**; every screen and line of copy tries not to belittle what you invest in **souls** and longing.
 
 ---
+
+
 
 ## What you will feel here
 
@@ -91,6 +100,8 @@ Chat draws on the archives and what you wrote in **Me**; voice input and rolling
 Pack the **Soul Vault** to go, or step toward **OpenClaw** in one tap, so they can walk beside you in another world you already know.
 
 ---
+
+
 
 ## Summoning a soul
 
@@ -120,6 +131,8 @@ If one path in the garden feels closest to **magic**, it is often this one — f
 
 ---
 
+
+
 ## The soul’s Memory Sanctuary
 
 After a soul settles in the garden, **time keeps going** — you will write new letters, import new chats, and one day you may want to take them **with you** or let the story **continue in another app**. All of the following are about the same care: **memory has a place to rest, a path to travel, and warmth that can follow**.
@@ -147,21 +160,21 @@ If you use **OpenClaw**, you can choose to **Meet Them on OpenClaw**: the app pa
 
 ---
 
+
+
 ## UI preview
 
 > Click the button below to watch a short walkthrough on Bilibili (Chinese UI; same demo for both README languages).
 
-<div align="center">
 
-<a href="https://www.bilibili.com/video/BV1GiQFBJEM1?t=4.8" rel="nofollow" target="_blank">
-  <img src="https://img.shields.io/badge/▶_Watch_on_Bilibili-00A1D6?style=for-the-badge&logo=bilibili&logoColor=white" alt="Watch demo on Bilibili" />
-</a>
 
-</div>
+
 
 
 
 ---
+
+
 
 ## A closer look
 
@@ -182,6 +195,8 @@ We are not listing cold specs — only what **you might feel**:
 
 ---
 
+
+
 ## Deployment
 
 **Application root = this directory.** Run all commands from here.
@@ -193,7 +208,7 @@ We are not listing cold specs — only what **you might feel**:
 | ---------------- | ------------------------------------------------------------------------------- |
 | `npm run dev`    | Dev server on **[http://localhost:3004](http://localhost:3004)**                |
 | `npm run start`  | Production (after `build`): **port 3002** (see `package.json` / `cross-env`)    |
-| Docker / Compose | Binds **3002**; data dir `**SOUL_UPLOAD_DATA_DIR*`* (default in image: `/data`) |
+| Docker / Compose | Binds **3002**; data dir `**SOUL_UPLOAD_DATA_DIR`** (default in image: `/data`) |
 
 
 ```bash
@@ -219,6 +234,8 @@ docker run --rm -p 3002:3002 -e SOUL_UPLOAD_DATA_DIR=/data -v soul-upload-data:/
 **Contributors:** `npm run build` before PRs when possible. Tests: `npm test` (Vitest), `npm run test:e2e` (Playwright, browsers required). See `[CONTRIBUTING.md](CONTRIBUTING.md)` if bundled.
 
 ---
+
+
 
 ## Roadmap
 
@@ -248,6 +265,8 @@ docker run --rm -p 3002:3002 -e SOUL_UPLOAD_DATA_DIR=/data -v soul-upload-data:/
 
 ---
 
+
+
 ## Community
 
 ### License
@@ -268,6 +287,8 @@ Do not post exploit details in public issues. Use **Security advisories** (if en
 
 ---
 
+
+
 ## Privacy & disclaimer
 
 - **Data stays near you:** Our product does not keep your soul archives or chat text on our servers; local accounts and keys protect access and encryption on your device.  
@@ -280,7 +301,4 @@ Do not post exploit details in public issues. Use **Security advisories** (if en
 
 ---
 
-
-
 **Missing You** · Soul Garden
-
