@@ -100,7 +100,11 @@ Welcoming a new soul into the garden is not ticking a box — it is a **summonin
 
 **Dream Companion** is for someone who **lives in a work** — a novel, show, game, or film. You do not have to arrive with a perfect wiki in your head. At the gate you can try **summon by their renowned name** (where the soul-summoner allows) with just a name and a world, or choose **I’ll summon them myself** and walk the form **step by step**, line by line.  
 
-We stay with you through **knowing them → voice and personality → emotions and boundaries → how you relate**; then comes the path only Dream Companions take — **Break the Dimensional Wall**. When your LLM and web tools are configured, you can gather a few **public references** — world, lines, relationships — guided by the **search tools and URL allowlist** you trust in **Settings** (**you can skip this entirely**). Then **more materials** and text, all **stored only on your device**, to thicken the soil for the **five-document extraction** to come.  
+We walk with you first — through **meeting them, learning how they speak, where their feelings turn, and how the two of you stand together** — as if you passed a **row of rooms, each a little brighter than the last**. Only then, and only for **Dream Companions**, comes a scene that should feel *almost like fiction*: **Break the Dimensional Wall** — *as if you pressed your palm to the thin film between you and the world of the work, and asked whether a draft still moves on the other side.*
+
+If you have **already, in the garden, linked a soul-summoner** and the **one outward path you yourself allowed** (in **Settings**), you may **reach into the common sea of story** and **borrow a few glints of world and line for them**; **or you can step back from the window** and **leave the membrane unbroken** — *no obligation.*
+
+**Letters, scraps, and anything you “bring back from elsewhere” never drift into our cloud**; they **come to rest only in the drawer of your own machine**, *dust-fine, star-true* — a ground for the **five gentle documents** when their soul is fully named.  
 
 If one path in the garden feels closest to **magic**, it is often this one — fiction met with care, not cynicism.  
 
