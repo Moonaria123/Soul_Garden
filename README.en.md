@@ -213,17 +213,17 @@ If you use **OpenClaw**, you can choose to **Meet Them on OpenClaw**: the app pa
 
 ## UI preview
 
-> Click the button below to watch a short walkthrough on Bilibili (Chinese UI; same demo for both README languages).
+> Below is a short **looping peek** at the interface. **Click the GIF** to open the **full walkthrough on Bilibili** in a new tab (Chinese UI; the same film is linked from both language READMEs).
 
 <div align="center">
 
-<a href="https://www.bilibili.com/video/BV1GiQFBJEM1?t=4.8" rel="nofollow" target="_blank">
-  <img src="https://img.shields.io/badge/▶_Watch_on_Bilibili-00A1D6?style=for-the-badge&logo=bilibili&logoColor=white" alt="Watch demo on Bilibili" />
+<a href="https://www.bilibili.com/video/BV1GiQFBJEM1?t=4.8" rel="noopener noreferrer" target="_blank">
+  <img src="UI%20Preview.gif" alt="UI preview: click to watch the full demo on Bilibili" width="720" />
 </a>
 
 </div>
 
-
+<p align="center"><sub>Larger GIFs may take a moment on first load; Bilibili has the full-quality video and sound.</sub></p>
 
 ---
 

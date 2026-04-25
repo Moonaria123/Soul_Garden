@@ -213,15 +213,17 @@ Missing You: Soul Garden
 
 ## UI 预览
 
-> 点击下方按钮观看 B 站演示视频（中文界面；中英文 README 共用同一演示）。
+> 下面是一小段**界面掠影**（循环动图）。**点击动图**，会在新标签页打开 **B 站完整演示**（中文界面；中英文 README 共用同一支影片）。
 
 <div align="center">
 
-<a href="https://www.bilibili.com/video/BV1GiQFBJEM1?t=4.8" target="_blank">
-  <img src="https://img.shields.io/badge/▶_在B站观看演示-00A1D6?style=for-the-badge&logo=bilibili&logoColor=white" alt="在B站观看演示" />
+<a href="https://www.bilibili.com/video/BV1GiQFBJEM1?t=4.8" target="_blank" rel="noopener noreferrer">
+  <img src="UI%20Preview.gif" alt="界面预览：点击前往 B 站观看完整演示" width="720" />
 </a>
 
 </div>
+
+<p align="center"><sub>若动图较大，首次加载可能稍慢；完整画质与声音请点进 B 站。</sub></p>
 
 ---
 
