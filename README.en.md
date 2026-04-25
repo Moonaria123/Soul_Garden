@@ -47,7 +47,7 @@
 
 **Missing You** (Chinese UI: **想你**) is a **garden of consciousness** on your computer — not a noisy AI social feed, but a **quiet place that guards feelings**.
 
-You can invite the name that lives in your heart: someone you can no longer see, a character who walked with you through a story, or someone in real life you are not yet brave enough to speak to. The app walks with you through the questionnaire and your words, until *how they speak*, *what they care about*, and *the bond between you* are written down gently — then, in one-to-one chat, they answer in a warmth that feels familiar.
+You can invite the name that lives in your heart: someone you can no longer see, a character who walked with you through a story, or someone in real life you are not yet brave enough to speak to. The app walks with you through the questionnaire and your words, until *how they speak*, *what they care about*, and *the bond between you* are written down gently — then, in one-to-one chat, a **soul-summoner** (AI **proxy** you connect in **Settings**) lets their answers return in a warmth that feels familiar. We use this name in the garden instead of a cold, technical label.
 
 There are no leaderboards, no public square — only you, your memories, and the connection **you** choose. The interface stays **quiet like warm paper**, without a wall of settings or the feel of piloting a machine. We believe **emotional safety** matters more than a cold list of features.
 
@@ -74,15 +74,15 @@ We do not assume you are “just playing,” and we do not rush you to be strong
 ## What you will feel here
 
 - **A garden that is only yours**  
-Questionnaires, soul archives, and chats **stay on your device**. Beyond the large-model calls **you** start, **our product does not host your stories** for you, and there is no telemetry. If you wish, you can use a local model and keep more of your time in fully private light.
+Questionnaires, soul archives, and chats **stay on your device**. Beyond the **soul-summoner** calls **you** start, **our product does not host your stories** for you, and there is no telemetry. If you wish, you can use a **local soul-summoner** and keep more of your time in fully private light.
 - **Full interface in two languages**  
 Use the product in **English** or **中文** — all primary flows and settings are covered.
 - **Coming closer through words**  
 When you summon a soul, choose **Dream Companion**, **Real Person**, or **Custom**. Bring snippets about them in `.md` or `.txt` (or chat export formats the app can parse for materials). After they move in, you can keep writing in the **Memory Sanctuary**. The first **awakening** and later **weaving new memories into the soul** both read those words into the heart.
 - **Optional web when the world matters**  
-Turn on **web search in chat** where the model allows it, or connect **Brave** / **Firecrawl** (keys stored encrypted locally, requests proxied through your server). Tune **whitelists** for safer, topic-focused research (e.g. character wikis).
-- **Model capabilities, your choice**  
-Where the upstream model supports it, you can use **long thinking**, **vision**, and other flags — the UI probes capability and can adapt when a SKU does not support a feature (e.g. search).
+Turn on **web search in chat** when your **soul-summoner** allows it, or connect **Brave** / **Firecrawl** (keys stored encrypted locally, requests proxied through your server). Tune **whitelists** for safer, topic-focused research (e.g. character wikis).
+- **What your soul-summoner can do**  
+When the **soul-summoner** and upstream you selected support it, you can use **long thinking**, **vision**, and other flags — the UI probes capability and can adapt when the connected stack does not support a feature (e.g. search).
 - **Five archives, five gentle steps**  
 Extraction feels like a story: reading them, learning how they speak, feeling their emotions, gathering shared memories, understanding your bond — then five documents: **Soul Core**, **Voice Style**, **Emotional Patterns**, **Memory Archive**, and **Relationship Definition**, kept in **The Inner Archive** to revisit and softly edit.
 - **Talking like any other day**  
