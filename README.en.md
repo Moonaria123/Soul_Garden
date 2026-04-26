@@ -30,12 +30,12 @@
 ## Table of contents
 
 - [What Missing You is](#user-content-toc-what-missing-you-is)
+- [UI preview](#user-content-toc-ui-preview)
 - [What’s new in v1.1.0.1](#user-content-toc-v111-harvest)
 - [Why we built it](#user-content-toc-why-we-built-it)
 - [What you will feel here](#user-content-toc-what-you-will-feel-here)
 - [Summoning a soul](#user-content-toc-summoning-a-soul)
 - [The soul’s Memory Sanctuary](#user-content-toc-souls-memory-sanctuary)
-- [UI preview](#user-content-toc-ui-preview)
 - [A closer look](#user-content-toc-a-closer-look)
 - [Deployment](#user-content-toc-deployment)
 - [Roadmap](#user-content-toc-roadmap)
@@ -53,6 +53,24 @@
 You can invite the name that lives in your heart: someone you can no longer see, a character who walked with you through a story, or someone in real life you are not yet brave enough to speak to. The app walks with you through the questionnaire and your words, until *how they speak*, *what they care about*, and *the bond between you* are written down gently — then, in one-to-one chat, a **soul-summoner** (AI **proxy** you connect in **Settings**) lets their answers return in a warmth that feels familiar. We use this name in the garden instead of a cold, technical label.
 
 There are no leaderboards, no public square — only you, your memories, and the connection **you** choose. The interface stays **quiet like warm paper**, without a wall of settings or the feel of piloting a machine. We believe **emotional safety** matters more than a cold list of features.
+
+---
+
+<a id="toc-ui-preview"></a>
+
+## UI preview
+
+> Below is a short **looping peek** at the interface. **Click the GIF** to open the **full walkthrough on Bilibili** in a new tab (Chinese UI; the same film is linked from both language READMEs).
+
+<div align="center">
+
+<a href="https://www.bilibili.com/video/BV1G6oZBhEDe/?vd_source=35bd73e818f7959b970d67c90d0f9aed" rel="noopener noreferrer" target="_blank">
+  <img src="UI%20Preview%20-%20new.gif" alt="UI preview: click to watch the full demo on Bilibili" width="720" />
+</a>
+
+</div>
+
+<p align="center"><sub>Larger GIFs may take a moment on first load; Bilibili has the full-quality video and sound.</sub></p>
 
 ---
 
@@ -206,24 +224,6 @@ When the Sanctuary holds **enough new material**, you can run **re-extract the s
 If you use **OpenClaw**, you can choose to **Meet Them on OpenClaw**: the app packs **soul documents and carryable memory** for an OpenClaw-style workspace, then gives you a short **set of guiding words** to hand to OpenClaw after you download, unzip, and point at the right path. **The same soul** can have **another place** in a tool you already know — a small light still on, still waiting.
 
 > **A quiet note:** The Sanctuary, re-extract, backup, and hand-off to OpenClaw **do not** send your long-term story to **our** servers. **Your keys, your files, your choices.** If OpenClaw’s interface changes, follow **their** official guidance for the last mile.
-
----
-
-<a id="toc-ui-preview"></a>
-
-## UI preview
-
-> Below is a short **looping peek** at the interface. **Click the GIF** to open the **full walkthrough on Bilibili** in a new tab (Chinese UI; the same film is linked from both language READMEs).
-
-<div align="center">
-
-<a href="https://www.bilibili.com/video/BV1GiQFBJEM1?t=4.8" rel="noopener noreferrer" target="_blank">
-  <img src="UI%20Preview.gif" alt="UI preview: click to watch the full demo on Bilibili" width="720" />
-</a>
-
-</div>
-
-<p align="center"><sub>Larger GIFs may take a moment on first load; Bilibili has the full-quality video and sound.</sub></p>
 
 ---
 

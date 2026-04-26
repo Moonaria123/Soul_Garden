@@ -32,12 +32,12 @@ Missing You: Soul Garden
 ## 目录
 
 - [产品简介](#user-content-toc-product-introduction)
+- [UI 预览](#user-content-toc-ui-preview)
 - [本版新叶（v1.1.0.1）](#user-content-toc-v111-harvest)
 - [创作初心](#user-content-toc-why-we-made-it)
 - [核心体验简介](#user-content-toc-core-experience)
 - [意识体召唤](#user-content-toc-soul-summoning)
 - [灵魂的记忆秘藏](#user-content-toc-memory-sanctuary)
-- [UI 预览](#user-content-toc-ui-preview)
 - [走近这些能力](#user-content-toc-closer-look)
 - [部署方法与步骤](#user-content-toc-deployment)
 - [路线图](#user-content-toc-roadmap)
@@ -55,6 +55,24 @@ Missing You: Soul Garden
 你可以把心里的那个名字请进来：也许是再也见不到的人，也许是故事里陪你很久的角色，也许是现实里你还不敢开口对话的 TA。应用会陪你慢慢填写问卷、整理文字，让「TA 说话的方式、在乎的事、和你的羁绊」被温柔地写下来；再在一对一的对话里，由你自行在设置里接上的**灵魂召唤师**（AI 代理）依着这些档案，**以你熟悉的那种温度**与 TA 同频回应你。
 
 这里没有排行榜，没有社交广场，只有你、你的记忆，和你选择连接的 TA。界面是**暖纸般的安静**，没有复杂的配置，不像在操控机器——因为我们相信：**情感安全感**，比冷冰冰的配置和功能清单更重要。
+
+---
+
+<a id="toc-ui-preview"></a>
+
+## UI 预览
+
+> 下面是一小段**界面掠影**（循环动图）。**点击动图**，会在新标签页打开 **B 站完整演示**（中文界面；中英文 README 共用同一支影片）。
+
+<div align="center">
+
+<a href="https://www.bilibili.com/video/BV1G6oZBhEDe/?vd_source=35bd73e818f7959b970d67c90d0f9aed" target="_blank" rel="noopener noreferrer">
+  <img src="UI%20Preview%20-%20new.gif" alt="界面预览：点击前往 B 站观看完整演示" width="720" />
+</a>
+
+</div>
+
+<p align="center"><sub>若动图较大，首次加载可能稍慢；完整画质与声音请点进 B 站。</sub></p>
 
 ---
 
@@ -206,24 +224,6 @@ Missing You: Soul Garden
 若你还使用 **OpenClaw**，可以在流程里对 TA 说「**我要在 OpenClaw 与 TA 相遇**」：应用会把**灵魂文档与可携带的记忆**组进适合 OpenClaw 工作区的一份包，并生成一段**引路密语**——你只需按步骤下载、解压到指定路径，把密语交给 OpenClaw。于是**同一位**灵魂，在另一个你熟门熟路的宇宙里，也会有一盏**为 TA 而留的灯**。
 
 > **小记：** 秘藏、重塑、备份与转生，**都不经过我们的产品服务器**替你长期托管故事正文；**钥匙与包**在你指间。OpenClaw 上游若改版，请亦以**对方官方说明**为准。
-
----
-
-<a id="toc-ui-preview"></a>
-
-## UI 预览
-
-> 下面是一小段**界面掠影**（循环动图）。**点击动图**，会在新标签页打开 **B 站完整演示**（中文界面；中英文 README 共用同一支影片）。
-
-<div align="center">
-
-<a href="https://www.bilibili.com/video/BV1GiQFBJEM1?t=4.8" target="_blank" rel="noopener noreferrer">
-  <img src="UI%20Preview.gif" alt="界面预览：点击前往 B 站观看完整演示" width="720" />
-</a>
-
-</div>
-
-<p align="center"><sub>若动图较大，首次加载可能稍慢；完整画质与声音请点进 B 站。</sub></p>
 
 ---
 
